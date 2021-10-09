@@ -1,0 +1,503 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Kubernetes with Java - Introduction - fn:join</title>
+<meta name=description content="Getting started with the Kubernetes API client libraries for Java">
+<meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-08-27-show-deployments\/","name":"Kubernetes with java introduction"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Introduction","description":"What are we going to do?  Learn how to initialize the k8s api client in a java spring-boot application Extract metadata from deployments in a namespace and transform that metadata into new views Prepare you for more sophisticated problem solving using the k8s API in future articles  Motivation  You have a few hundred different applications (as Kubernetes deployment resources) running in your cluster All of those applications use labels to designate the name of the team that manages that application, and the application name You want to provide APIs that:  Lists all teams that have applications running in the cluster Lists all apps that belong to a team    Scenario Assumption: you have minikube locally and you don\u0026rsquo;t already have a namespace called dev.","inLanguage":"en","wordCount":1820,"datePublished":"2021-08-27T00:00:00","dateModified":"2021-08-27T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-08-27-show-deployments\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<meta property="og:title" content="Kubernetes with Java - Introduction">
+<meta property="og:description" content="Getting started with the Kubernetes API client libraries for Java">
+<meta property="og:url" content="https://fnjoin.com/post/2021-08-27-show-deployments/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fn:join">
+<meta name=twitter:title content="Kubernetes with Java - Introduction">
+<meta name=twitter:description content="Getting started with the Kubernetes API client libraries for Java">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@fnjoin">
+<meta name=twitter:creator content="@fnjoin">
+<link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon>
+<meta name=generator content="Hugo 0.88.1">
+<link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous>
+<link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous>
+<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+<link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','G-ZPSKLMVM2V','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+<div class=container-fluid>
+<div class=navbar-header>
+<button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=https://fnjoin.com/>fn:join</a>
+</div>
+<div class="collapse navbar-collapse" id=main-navbar>
+<ul class="nav navbar-nav navbar-right">
+<li>
+<a title=Blog href=/>Blog</a>
+</li>
+<li>
+<a title=About href=/page/about/>About</a>
+</li>
+<li>
+<a title=Tags href=/tags>Tags</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header class=header-section>
+<div class="intro-header no-img">
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=post-heading>
+<h1>Kubernetes with Java - Introduction</h1>
+<h2 class=post-subheading>Getting started with the Kubernetes API client libraries for Java</h2>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on August 27, 2021
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;9&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class=container role=main>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<article role=main class=blog-post>
+<h3 id=what-are-we-going-to-do>What are we going to do?</h3>
+<ul>
+<li>Learn how to initialize the k8s api client in a java spring-boot application</li>
+<li>Extract metadata from deployments in a namespace and transform that metadata into new views</li>
+<li>Prepare you for more sophisticated problem solving using the k8s API in future articles</li>
+</ul>
+<h3 id=motivation>Motivation</h3>
+<ul>
+<li>You have a few hundred different applications (as Kubernetes deployment resources) running in your cluster</li>
+<li>All of those applications use labels to designate the name of the team that manages that application, and the application name</li>
+<li>You want to provide APIs that:
+<ul>
+<li>Lists all teams that have applications running in the cluster</li>
+<li>Lists all apps that belong to a team</li>
+</ul>
+</li>
+</ul>
+<h3 id=scenario>Scenario</h3>
+<p>Assumption: you have minikube locally and you don&rsquo;t already have a namespace called <code>dev</code>.</p>
+<p>First, let&rsquo;s create the namespace where we will start our sample applications:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>kubectl create namespace dev
+</code></pre></div><p>Now, let&rsquo;s create some deployments to model lots of different teams with lots of apps. This creates 5 teams with 9 applications each (petnames.txt contains 50 petnames).</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>curl -Lo petnames.txt https://fnjoin.com/data/2021-08-21-show-pods-petnames.txt 
+cat petnames.txt <span class=p>|</span> paste - - - - - - - - - - <span class=p>|</span> <span class=se>\
+</span><span class=se></span><span class=k>while</span> <span class=nb>read</span> line <span class=p>;</span> <span class=k>do</span> 
+  <span class=nb>set</span> -- <span class=nv>$line</span>
+  <span class=nv>team</span><span class=o>=</span>team-<span class=nv>$1</span>
+  <span class=nb>shift</span>
+  <span class=k>for</span> app <span class=p>;</span> <span class=k>do</span> 
+    <span class=nv>app</span><span class=o>=</span>app-<span class=nv>$app</span>
+    kubectl create deployment <span class=nv>$app</span> --image<span class=o>=</span>k8s.gcr.io/echoserver:1.4 -n dev
+    kubectl label deployment <span class=nv>$app</span> <span class=nv>team</span><span class=o>=</span><span class=nv>$team</span> -n dev
+  <span class=k>done</span>
+<span class=k>done</span>
+</code></pre></div><p>Once that completes you&rsquo;ll have 90 echoservers running. Running <code>kubectl get deployments -n dev</code> would reveal output like:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+app-acaroid-emilee           0/1     <span class=m>1</span>            <span class=m>0</span>           47s
+app-ageless-lynna            0/1     <span class=m>1</span>            <span class=m>0</span>           35s
+app-airless-jettie           0/1     <span class=m>1</span>            <span class=m>0</span>           12s
+app-announceable-yasmin      0/1     <span class=m>1</span>            <span class=m>0</span>           18s
+app-apocopic-chanel          0/1     <span class=m>1</span>            <span class=m>0</span>           27s
+app-benmost-rudy             0/1     <span class=m>1</span>            <span class=m>0</span>           39s
+app-blastular-sparkle        0/1     <span class=m>1</span>            <span class=m>0</span>           29s
+app-bromidic-kamden          0/1     <span class=m>1</span>            <span class=m>0</span>           23s
+app-buggier-helga            0/1     <span class=m>1</span>            <span class=m>0</span>           32s
+app-bullheaded-tran          0/1     <span class=m>1</span>            <span class=m>0</span>           19s
+....
+</code></pre></div><hr>
+<p>If you wanted to get more information about the deployments, you could get the output of the above command in JSON format and transform it with something like <a href=https://stedolan.github.io/jq/>jq</a> to get the relevant information out like so:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>kubectl get deployments -n dev -o json <span class=p>|</span> jq <span class=s1>&#39;[ .items[] | { name: .metadata.labels.app, team: .metadata.labels.team, readyInstances: .status.readyReplicas }]&#39;</span>
+</code></pre></div><p>This command will transform the information from <code>kubectl</code> to show a list of apps along with their team names, and how many instances of each are ready. This capability to access Kubernetes information from CLI is very powerful on its own but we want to provide this information through an API since most people in our fictional organization won&rsquo;t have access to run the <code>kubectl</code> commands against the cluster for security reasons.</p>
+<blockquote>
+<p>This is a contrived example, as almost all Kubernetes platforms make some kind of dashboard available that let you view resources in the cluster along with their labels. This example mainly shows you how one would go about interacting with the Kubernetes API using Java.</p>
+</blockquote>
+<h3 id=introducing-the-kubernetes-java-client-libraries>Introducing the Kubernetes Java Client libraries</h3>
+<p>Kubernetes API clients are published in multiple languages. The <a href=https://github.com/kubernetes-client/java>Java version of these libraries</a> are published in public maven repositories. As of this writing, version <code>13.0.0</code> is the latest version available. Depending on which version of Kubernetes cluster you will be targeting, it is advisable to check the official <a href=https://github.com/kubernetes-client/java/wiki/2.-Versioning-and-Compatibility>compatibility matrix</a>. If using gradle, you can add the following dependency to your <code>build.gradle</code>:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=n>implementation</span> <span class=s1>&#39;io.kubernetes:client-java-extended:13.0.0&#39;</span>
+</code></pre></div><p>If using maven, then add the following dependency to <code>pom.xml</code>:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=nt>&lt;dependency&gt;</span>
+    <span class=nt>&lt;groupId&gt;</span>io.kubernetes<span class=nt>&lt;/groupId&gt;</span>
+    <span class=nt>&lt;artifactId&gt;</span>client-java-extended<span class=nt>&lt;/artifactId&gt;</span>
+    <span class=nt>&lt;version&gt;</span>13.0.0<span class=nt>&lt;/version&gt;</span>
+<span class=nt>&lt;/dependency&gt;</span>
+</code></pre></div><h3 id=initializing-the-client>Initializing the client</h3>
+<p>Before using the Kubernetes client, we need to initialize it by letting it know how to connect to the Kubernetes cluster&rsquo;s API server. There are two variations of this. Either we will be running this app inside the Kubernetes cluster as a pod itself or we will be running outside of the cluster we want to target. In either case <code>io.kubernetes.client.openapi.ApiClient</code> encapsulates that connection.</p>
+<p>We will leave the details on how to initialize the client when running inside a Kubernetes cluster for a later post. When running this program outside a Kubernetes cluster, we will use the same mechanism <code>kubectl</code> uses to connect to a remote Kubernetes cluster. The following code will instantiate a spring bean of type <code>ApiClient</code>:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>io.kubernetes.client.openapi.ApiClient</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>io.kubernetes.client.util.ClientBuilder</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>io.kubernetes.client.util.KubeConfig</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>lombok.extern.slf4j.Slf4j</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.commons.lang3.StringUtils</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.context.annotation.Bean</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.context.annotation.Configuration</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>java.io.File</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.FileReader</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.io.IOException</span><span class=o>;</span>
+
+<span class=nd>@Slf4j</span>
+<span class=nd>@Configuration</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>ApiClientConfig</span> <span class=o>{</span>
+
+    <span class=nd>@Bean</span>
+    <span class=kd>public</span> <span class=n>ApiClient</span> <span class=nf>externalApiClient</span><span class=o>()</span> <span class=kd>throws</span> <span class=n>IOException</span> <span class=o>{</span>
+        <span class=n>KubeConfig</span> <span class=n>kubeConfig</span> <span class=o>=</span> <span class=n>KubeConfig</span><span class=o>.</span><span class=na>loadKubeConfig</span><span class=o>(</span><span class=k>new</span> <span class=n>FileReader</span><span class=o>(</span><span class=n>getConfigFile</span><span class=o>()));</span>
+        <span class=n>log</span><span class=o>.</span><span class=na>info</span><span class=o>(</span><span class=s>&#34;Current Context: Name={}&#34;</span><span class=o>,</span> <span class=n>kubeConfig</span><span class=o>.</span><span class=na>getCurrentContext</span><span class=o>());</span>
+        <span class=k>return</span> <span class=n>ClientBuilder</span>
+                <span class=o>.</span><span class=na>kubeconfig</span><span class=o>(</span><span class=n>kubeConfig</span><span class=o>)</span>
+                <span class=o>.</span><span class=na>build</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=kd>private</span> <span class=n>File</span> <span class=nf>getConfigFile</span><span class=o>()</span> <span class=o>{</span>
+        <span class=n>String</span> <span class=n>kubeConfigVar</span> <span class=o>=</span> <span class=n>System</span><span class=o>.</span><span class=na>getenv</span><span class=o>(</span><span class=s>&#34;KUBECONFIG&#34;</span><span class=o>);</span>
+        <span class=k>if</span> <span class=o>(</span><span class=n>StringUtils</span><span class=o>.</span><span class=na>isNotBlank</span><span class=o>(</span><span class=n>kubeConfigVar</span><span class=o>))</span> <span class=o>{</span>
+            <span class=n>log</span><span class=o>.</span><span class=na>info</span><span class=o>(</span><span class=s>&#34;Using KUBECONFIG variable: Value=&#39;{}&#39;&#34;</span><span class=o>,</span> <span class=n>kubeConfigVar</span><span class=o>);</span>
+            <span class=k>return</span> <span class=k>new</span> <span class=n>File</span><span class=o>(</span><span class=n>kubeConfigVar</span><span class=o>);</span>
+        <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+            <span class=n>File</span> <span class=n>configDir</span> <span class=o>=</span> <span class=k>new</span> <span class=n>File</span><span class=o>(</span><span class=n>System</span><span class=o>.</span><span class=na>getProperty</span><span class=o>(</span><span class=s>&#34;user.home&#34;</span><span class=o>),</span> <span class=s>&#34;.kube&#34;</span><span class=o>);</span>
+            <span class=n>File</span> <span class=n>configFile</span> <span class=o>=</span> <span class=k>new</span> <span class=n>File</span><span class=o>(</span><span class=n>configDir</span><span class=o>,</span> <span class=s>&#34;config&#34;</span><span class=o>);</span>
+            <span class=n>log</span><span class=o>.</span><span class=na>info</span><span class=o>(</span><span class=s>&#34;Using home file: Path=&#39;{}&#39;&#34;</span><span class=o>,</span> <span class=n>configFile</span><span class=o>.</span><span class=na>getPath</span><span class=o>());</span>
+            <span class=k>return</span> <span class=n>configFile</span><span class=o>;</span>
+        <span class=o>}</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</code></pre></div><h3 id=use-the-client-to-lookup-the-deployments>Use the client to lookup the deployments</h3>
+<p>Now that we have the <em>api-client</em>, we are ready to lookup the <em>deployments</em> metadata. Here we will make some assumptions:</p>
+<ul>
+<li>We are only interested in deployments running in the <code>dev</code> namespace</li>
+<li>We are only interested in deployments containing <code>app</code> and <code>team</code> labels</li>
+<li>We are intersted in the following attributes of the deployments:
+<ul>
+<li>App name</li>
+<li>Team that app belongs to</li>
+<li>How many intances/replicas of that app are running/ready</li>
+</ul>
+</li>
+</ul>
+<p>We will first declare a java bean that will hold the information about a running application, lets call it <code>TeamApp</code>. We are using <a href=https://projectlombok.org/>project lombok</a> to cut down on boiler-plate code here. We will also be using the <a href=https://blogs.oracle.com/javamagazine/java-builder-pattern-bloch><em>builder</em> pattern</a> for this bean:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>lombok.Builder</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>lombok.Value</span><span class=o>;</span>
+
+<span class=nd>@Value</span>
+<span class=nd>@Builder</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>TeamApp</span> <span class=o>{</span>
+    <span class=n>String</span> <span class=n>name</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>team</span><span class=o>;</span>
+    <span class=kt>int</span> <span class=n>readyInstances</span><span class=o>;</span>
+<span class=o>}</span>
+</code></pre></div><p>We will declare an interface that is the contract for our API. One method will provide the names for teams that have applications running in the cluster. The other method will return list of <em>team-app</em> objects for a given team. the interface will look like:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>java.util.List</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.util.Set</span><span class=o>;</span>
+
+<span class=kd>public</span> <span class=kd>interface</span> <span class=nc>TeamAppsService</span> <span class=o>{</span>
+
+    <span class=n>String</span> <span class=n>APP_LABEL</span> <span class=o>=</span> <span class=s>&#34;app&#34;</span><span class=o>;</span>
+    <span class=n>String</span> <span class=n>TEAM_LABEL</span> <span class=o>=</span> <span class=s>&#34;team&#34;</span><span class=o>;</span>
+
+    <span class=n>Set</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span> <span class=nf>listTeams</span><span class=o>();</span>
+    <span class=n>List</span><span class=o>&lt;</span><span class=n>TeamApp</span><span class=o>&gt;</span> <span class=nf>listTeamApps</span><span class=o>(</span><span class=n>String</span> <span class=n>team</span><span class=o>);</span>
+<span class=o>}</span>
+</code></pre></div><p>Next we will create an implementation of this interface and expose it as spring bean:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>io.kubernetes.client.openapi.ApiClient</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>io.kubernetes.client.openapi.apis.AppsV1Api</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>lombok.extern.slf4j.Slf4j</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.beans.factory.annotation.Value</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.stereotype.Service</span><span class=o>;</span>
+
+<span class=nd>@Slf4j</span>
+<span class=nd>@Service</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>SynchronousTeamAppsService</span> <span class=kd>implements</span> <span class=n>TeamAppsService</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=kd>final</span> <span class=n>AppsV1Api</span> <span class=n>appsV1Api</span><span class=o>;</span>
+    <span class=kd>private</span> <span class=kd>final</span> <span class=n>String</span> <span class=n>namespace</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>SynchronousTeamAppsService</span><span class=o>(</span>
+            <span class=n>ApiClient</span> <span class=n>client</span><span class=o>,</span>
+            <span class=nd>@Value</span><span class=o>(</span><span class=s>&#34;${namespace}&#34;</span><span class=o>)</span> <span class=n>String</span> <span class=n>namespace</span><span class=o>)</span> <span class=o>{</span>
+        
+        <span class=n>log</span><span class=o>.</span><span class=na>info</span><span class=o>(</span><span class=s>&#34;Creating synchronous team-app service, Namespace={}&#34;</span><span class=o>,</span> <span class=n>namespace</span><span class=o>);</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>appsV1Api</span> <span class=o>=</span> <span class=k>new</span> <span class=n>AppsV1Api</span><span class=o>(</span><span class=n>client</span><span class=o>);</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>namespace</span> <span class=o>=</span> <span class=n>namespace</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=o>...</span>
+<span class=o>}</span>
+</code></pre></div><p>In the constructor above, <em>api-client</em> bean is injectedby Spring, which is used to create an <code>AppsV1Api</code> object - this is the object we will be dealing with to access <em>app</em> level Kubernetes objects like <code>Deployment</code> and <code>StatefulSet</code> among others. There are other <em>API</em> objects in the <code>io.kubernetes.client.openapi.apis</code> package that deal with other kinds of built-in kubernetes objects. For example, we can use <code>CoreV1Api</code> to deal with <code>Pod</code>, <code>ConfigMap</code>, <code>Secret</code>, and <code>Service</code>.</p>
+<p>Next is the <code>namespace</code> variable that is injected into this bean by spring. The <code>application.properties</code> file in the poject sets this value as <code>dev</code> but it can be overidden at runtime through various spring framework means.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kd>public</span> <span class=n>Set</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span> <span class=nf>listTeams</span><span class=o>()</span> <span class=o>{</span>
+    <span class=k>return</span> <span class=n>appsV1Api</span><span class=o>.</span><span class=na>listNamespacedDeployment</span><span class=o>(</span>
+                    <span class=n>namespace</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=n>TEAM_LABEL</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>)</span>
+            <span class=o>.</span><span class=na>getItems</span><span class=o>()</span>
+            <span class=o>.</span><span class=na>stream</span><span class=o>()</span>
+            <span class=o>.</span><span class=na>map</span><span class=o>(</span><span class=n>deployment</span> <span class=o>-&gt;</span> <span class=n>deployment</span><span class=o>.</span><span class=na>getMetadata</span><span class=o>().</span><span class=na>getLabels</span><span class=o>().</span><span class=na>get</span><span class=o>(</span><span class=s>&#34;team&#34;</span><span class=o>))</span>
+            <span class=o>.</span><span class=na>collect</span><span class=o>(</span><span class=n>Collectors</span><span class=o>.</span><span class=na>toSet</span><span class=o>());</span>
+<span class=o>}</span>
+</code></pre></div><p>The star of this functionality is the <code>AppsV1Api.listNamespacedDeployment()</code> call with lots of <code>null</code> values being passed in. To understand what these values are, here is the source code of this method&rsquo;s signature from the library:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kd>public</span> <span class=n>V1DeploymentList</span> <span class=nf>listNamespacedDeployment</span><span class=o>(</span>
+        <span class=n>String</span> <span class=n>namespace</span><span class=o>,</span>
+        <span class=n>String</span> <span class=n>pretty</span><span class=o>,</span>
+        <span class=n>Boolean</span> <span class=n>allowWatchBookmarks</span><span class=o>,</span>
+        <span class=n>String</span> <span class=n>_continue</span><span class=o>,</span>
+        <span class=n>String</span> <span class=n>fieldSelector</span><span class=o>,</span>
+        <span class=n>String</span> <span class=n>labelSelector</span><span class=o>,</span>
+        <span class=n>Integer</span> <span class=n>limit</span><span class=o>,</span>
+        <span class=n>String</span> <span class=n>resourceVersion</span><span class=o>,</span>
+        <span class=n>String</span> <span class=n>resourceVersionMatch</span><span class=o>,</span>
+        <span class=n>Integer</span> <span class=n>timeoutSeconds</span><span class=o>,</span>
+        <span class=n>Boolean</span> <span class=n>watch</span><span class=o>)</span>
+        <span class=kd>throws</span> <span class=n>ApiException</span> <span class=o>{</span>
+    <span class=o>...</span>
+<span class=o>}</span>
+</code></pre></div><p>This Java API mimics the Kubernetes API very closely. All these arguments are meant for more advanced usages, but for our purposes, supplying <code>namespace</code> and <code>labelSelector</code> parameters are sufficient. The <code>labelselector</code> parameter is a string that can be formatted according to the <a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors>official documentation</a>. We will supply the label name of <code>team</code> as the value for that parameter. This ensures that returned pods will have that label present no matter what the label values are.</p>
+<p>This method returns a <code>V1DeploymentList</code> which has the <code>getItems()</code> mthos which return a list of <code>V1Deployment</code>. Once we have a list, we can use the java stream mechanism to transform each to a team name, adding them to a java <em>set</em> which will take care of duplicates. Like the <code>V1Deployment</code>, most Kubernetes built-in resources have a corresponding class in the <code>io.kubernetes.client.openapi.models</code> package.</p>
+<blockquote>
+<p>There is a pattern at play here. In the <em>api</em> object you&rsquo;ll find methods of the form <code>listNamespacedSomething()</code> that pretty much takes this exact set of arguments. It returns a <code>V1SomethingList</code> object which has a <code>getItems()</code> method that returns a list of <code>V1Something</code> objects.</p>
+</blockquote>
+<p>Finally, we need to implement the <code>listTeamApps()</code> method. It will use the same <em>api</em> call but instead of mapping <code>V1Deployment</code> to a team name, it will map them to <code>TeamApp</code> objects. The relavant code will look like:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kd>public</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>TeamApp</span><span class=o>&gt;</span> <span class=nf>listTeamApps</span><span class=o>(</span><span class=n>String</span> <span class=n>team</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>return</span> <span class=n>appsV1Api</span><span class=o>.</span><span class=na>listNamespacedDeployment</span><span class=o>(</span>
+                    <span class=n>namespace</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=n>TEAM_LABEL</span> <span class=o>+</span> <span class=s>&#34;=&#34;</span> <span class=o>+</span> <span class=n>team</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>,</span>
+                    <span class=kc>null</span><span class=o>)</span>
+            <span class=o>.</span><span class=na>getItems</span><span class=o>()</span>
+            <span class=o>.</span><span class=na>stream</span><span class=o>()</span>
+            <span class=o>.</span><span class=na>map</span><span class=o>(</span><span class=k>this</span><span class=o>::</span><span class=n>toTeamApp</span><span class=o>)</span>
+            <span class=o>.</span><span class=na>collect</span><span class=o>(</span><span class=n>Collectors</span><span class=o>.</span><span class=na>toList</span><span class=o>());</span>
+<span class=o>}</span>
+
+<span class=kd>private</span> <span class=n>TeamApp</span> <span class=nf>toTeamApp</span><span class=o>(</span><span class=n>V1Deployment</span> <span class=n>v1Deployment</span><span class=o>)</span> <span class=o>{</span>
+    <span class=k>return</span> <span class=n>TeamApp</span><span class=o>.</span><span class=na>builder</span><span class=o>()</span>
+            <span class=o>.</span><span class=na>name</span><span class=o>(</span><span class=n>v1Deployment</span><span class=o>.</span><span class=na>getMetadata</span><span class=o>().</span><span class=na>getLabels</span><span class=o>().</span><span class=na>get</span><span class=o>(</span><span class=n>APP_LABEL</span><span class=o>))</span>
+            <span class=o>.</span><span class=na>team</span><span class=o>(</span><span class=n>v1Deployment</span><span class=o>.</span><span class=na>getMetadata</span><span class=o>().</span><span class=na>getLabels</span><span class=o>().</span><span class=na>get</span><span class=o>(</span><span class=n>TEAM_LABEL</span><span class=o>))</span>
+            <span class=o>.</span><span class=na>readyInstances</span><span class=o>(</span><span class=n>v1Deployment</span><span class=o>.</span><span class=na>getStatus</span><span class=o>().</span><span class=na>getReadyReplicas</span><span class=o>())</span>
+            <span class=o>.</span><span class=na>build</span><span class=o>();</span>
+<span class=o>}</span>
+</code></pre></div><p>Also, notice that the <code>labelSelector</code> argument is of the form <code>team=TEAM_NAME</code>. This will ensure we only get <em>deployment</em> objects belonging to the given team.</p>
+<h3 id=using-the-service-to-serve-the-results>Using the service to serve the results</h3>
+<p>At this point, we can use this <em>service</em> bean to lookup the information. We will introduce a <em>controller</em> to front this <em>service</em> functionality. The <em>controller</em> can look like this:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>lombok.RequiredArgsConstructor</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.web.bind.annotation.GetMapping</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.web.bind.annotation.PathVariable</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.web.bind.annotation.RestController</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>java.util.List</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>java.util.Set</span><span class=o>;</span>
+
+<span class=nd>@RestController</span>
+<span class=nd>@RequiredArgsConstructor</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>TeamAppsController</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=kd>final</span> <span class=n>TeamAppsService</span> <span class=n>service</span><span class=o>;</span>
+
+    <span class=nd>@GetMapping</span><span class=o>(</span><span class=s>&#34;/teams&#34;</span><span class=o>)</span>
+    <span class=kd>private</span> <span class=n>Set</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span> <span class=nf>listTeams</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>service</span><span class=o>.</span><span class=na>listTeams</span><span class=o>();</span>
+    <span class=o>}</span>
+
+    <span class=nd>@GetMapping</span><span class=o>(</span><span class=s>&#34;/teams/{team}/apps&#34;</span><span class=o>)</span>
+    <span class=kd>private</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>TeamApp</span><span class=o>&gt;</span> <span class=nf>listTeamApps</span><span class=o>(</span><span class=nd>@PathVariable</span> <span class=n>String</span> <span class=n>team</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>service</span><span class=o>.</span><span class=na>listTeamApps</span><span class=o>(</span><span class=n>team</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</code></pre></div><p>Notice the use of <code>@RequiredArgsConstructor</code> annotation. It is another time saver from project lombok. It generates a class constructor that accepts parameters for all <code>private final</code> varaibles in the class and sets them accordingly. Spring then notices this constructor and has no choice but to inject the matching bean. Even though our service implementation class is <code>SynchronousTeamAppsService</code>, spring will inject it for the <code>service</code> variable since that bean implements the <code>TeamAppsService</code> interface.</p>
+<h3 id=whats-next>Whats next</h3>
+<p>The APIs we used above make synchronous calls to the Kubernetes API server. In a <a href=../2021-09-08-show-deployments-async>next post</a>, we will explore how to enable the same functionality using asynchronous mechanisms provided by the Kubernetes API.</p>
+<h3 id=conclusion>Conclusion</h3>
+<p>In this post we introduced the <a href=https://github.com/kubernetes-client/java>Kubernetes Java Client</a>. It is relatively easy to use the library to automate, monitor, and/or extend the kubernetes platform. Most of the community uses <em>Go</em> programming language for this purposes and there are lots of good reasons to do that. Fast startup times, small footprint native executables, efficient threading support, etc.</p>
+<p>Java programs can achieve all these qualities as well. Java has a large open-source libraries ecosystem and the collective community has vast experience in designing resilient and scalable systems. The prevalence of spring-boot, reactive programming, and upcoming <a href=https://www.graalvm.org/reference-manual/native-image/>native-image capabilities with GraalVM</a> are good indicators that Java will stay relevant even in the Kubernetes ecosystem.</p>
+<h3 id=referenced-code>Referenced Code</h3>
+<p>To see working code from this post (with slight modifications), see the <a href=https://github.com/fnjoin/blog-team-apps>Git repository</a>.</p>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
+<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
+</div>
+<hr>
+<section id=social-share>
+<div class="list-inline footer-links">
+<div class=share-box aria-hidden=true>
+<ul class=share>
+<li>
+<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-08-27-show-deployments%2f&text=Kubernetes%20with%20Java%20-%20Introduction&via=fnjoin" target=_blank title="Share on Twitter">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+<li>
+<a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2ffnjoin.com%2fpost%2f2021-08-27-show-deployments%2f" target=_blank title="Share on Facebook">
+<i class="fab fa-facebook"></i>
+</a>
+</li>
+<li>
+<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-08-27-show-deployments%2f&title=Kubernetes%20with%20Java%20-%20Introduction" target=_blank title="Share on Reddit">
+<i class="fab fa-reddit"></i>
+</a>
+</li>
+<li>
+<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-08-27-show-deployments%2f&title=Kubernetes%20with%20Java%20-%20Introduction" target=_blank title="Share on LinkedIn">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+<li>
+<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-08-27-show-deployments%2f&title=Kubernetes%20with%20Java%20-%20Introduction" target=_blank title="Share on StumbleUpon">
+<i class="fab fa-stumbleupon"></i>
+</a>
+</li>
+<li>
+<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-08-27-show-deployments%2f&description=Kubernetes%20with%20Java%20-%20Introduction" target=_blank title="Share on Pinterest">
+<i class="fab fa-pinterest"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<h4 class=see-also>See also</h4>
+<ul>
+<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - running in the cluster</a></li>
+<li><a href=/post/2021-09-08-show-deployments-async/>Kubernetes with Java - Asynchronous APIs</a></li>
+</ul>
+</article>
+<ul class="pager blog-pager">
+<li class=next>
+<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - Asynchronous APIs">Next Post &rarr;</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<footer>
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<ul class="list-inline text-center footer-links">
+<li>
+<a href=mailto:contact@fnjoin.com title="Email us">
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://github.com/fnjoin title=GitHub>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://twitter.com/fnjoin title=Twitter>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href title=RSS>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="credits copyright text-muted">
+<a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
+&nbsp;&bull;&nbsp;&copy;
+2021
+&nbsp;&bull;&nbsp;
+<a href=https://fnjoin.com/>fn:join</a>
+</p>
+<p class="credits theme-by text-muted">
+</p>
+</div>
+</div>
+</div>
+</footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://fnjoin.com/js/main.js></script>
+<script src=https://fnjoin.com/js/highlight.min.js></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script>
+</body>
+</html>
