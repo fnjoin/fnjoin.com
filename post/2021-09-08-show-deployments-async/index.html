@@ -126,18 +126,18 @@
 <div class=box>
 <figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
 <div class=img>
-<img itemprop=thumbnail src=/img/show-pods/synchronous-call.jpg alt="Synchronous Call to Kubernetes API">
+<img itemprop=thumbnail src=/img/show-deployments-async/synchronous-call.jpg alt="Synchronous Call to Kubernetes API">
 </div>
-<a href=/img/show-pods/synchronous-call.jpg itemprop=contentUrl></a>
+<a href=/img/show-deployments-async/synchronous-call.jpg itemprop=contentUrl></a>
 </figure>
 </div>
 <p>The asynchronous API is more appropriate if our app will be accessing the Kubernetes API very frequently. In this scenario, the client (our application) subscribes to change events - also known as creating a <em>watch</em>. The client can then react to these changes in near real-time or simply cache the information locally to use later. This kind of interaciton can be visualized like so:</p>
 <div class=box>
 <figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
 <div class=img>
-<img itemprop=thumbnail src=/img/show-pods/asynchronous-call.jpg alt="Asynchronous Call to Kubernetes API">
+<img itemprop=thumbnail src=/img/show-deployments-async/asynchronous-call.jpg alt="Asynchronous Call to Kubernetes API">
 </div>
-<a href=/img/show-pods/asynchronous-call.jpg itemprop=contentUrl></a>
+<a href=/img/show-deployments-async/asynchronous-call.jpg itemprop=contentUrl></a>
 </figure>
 </div>
 <h3 id=using-the-asynchronous-api>Using the asynchronous API</h3>
