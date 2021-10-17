@@ -221,15 +221,15 @@ app-bullheaded-tran          0/1     <span class=m>1</span>            <span cla
 <ul>
 <li>We are only interested in deployments running in the <code>dev</code> namespace</li>
 <li>We are only interested in deployments containing <code>app</code> and <code>team</code> labels</li>
-<li>We are intersted in the following attributes of the deployments:
+<li>We are interested in the following attributes of the deployments:
 <ul>
 <li>App name</li>
 <li>Team that app belongs to</li>
-<li>How many intances/replicas of that app are running/ready</li>
+<li>How many instances/replicas of that app are running/ready</li>
 </ul>
 </li>
 </ul>
-<p>We will first declare a java bean that will hold the information about a running application, lets call it <code>TeamApp</code>. We are using <a href=https://projectlombok.org/>project lombok</a> to cut down on boiler-plate code here. We will also be using the <a href=https://blogs.oracle.com/javamagazine/java-builder-pattern-bloch><em>builder</em> pattern</a> for this bean:</p>
+<p>We will first declare a Java bean that will hold the information about a running application, lets call it <code>TeamApp</code>. We are using <a href=https://projectlombok.org/>project Lombok</a> to cut down on boiler-plate code here. We will also be using the <a href=https://blogs.oracle.com/javamagazine/java-builder-pattern-bloch><em>builder</em> pattern</a> for this bean:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>lombok.Builder</span><span class=o>;</span>
 <span class=kn>import</span> <span class=nn>lombok.Value</span><span class=o>;</span>
 
@@ -277,8 +277,8 @@ app-bullheaded-tran          0/1     <span class=m>1</span>            <span cla
 
     <span class=o>...</span>
 <span class=o>}</span>
-</code></pre></div><p>In the constructor above, <em>api-client</em> bean is injected by Spring, which is used to create an <code>AppsV1Api</code> object - this is the object we will be dealing with to access <em>app</em> level Kubernetes objects like <code>Deployment</code> and <code>StatefulSet</code> among others. There are other <em>API</em> objects in the <code>io.kubernetes.client.openapi.apis</code> package that deal with other kinds of built-in kubernetes objects. For example, we can use <code>CoreV1Api</code> to deal with <code>Pod</code>, <code>ConfigMap</code>, <code>Secret</code>, and <code>Service</code>.</p>
-<p>Next is the <code>namespace</code> variable that is injected into this bean by Spring. The <code>application.properties</code> file in the poject sets this value as <code>dev</code> but it can be overidden at runtime through various Spring Framework means.</p>
+</code></pre></div><p>In the constructor above, <em>api-client</em> bean is injected by Spring, which is used to create an <code>AppsV1Api</code> object - this is the object we will be dealing with to access <em>app</em> level Kubernetes objects like <code>Deployment</code> and <code>StatefulSet</code> among others. There are other <em>API</em> objects in the <code>io.kubernetes.client.openapi.apis</code> package that deal with other kinds of built-in Kubernetes objects. For example, we can use <code>CoreV1Api</code> to deal with <code>Pod</code>, <code>ConfigMap</code>, <code>Secret</code>, and <code>Service</code>.</p>
+<p>Next is the <code>namespace</code> variable that is injected into this bean by Spring. The <code>application.properties</code> file in the project sets this value as <code>dev</code> but it can be overridden at runtime through various Spring Framework means.</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kd>public</span> <span class=n>Set</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span> <span class=nf>listTeams</span><span class=o>()</span> <span class=o>{</span>
     <span class=k>return</span> <span class=n>appsV1Api</span><span class=o>.</span><span class=na>listNamespacedDeployment</span><span class=o>(</span>
                     <span class=n>namespace</span><span class=o>,</span>
@@ -314,11 +314,11 @@ app-bullheaded-tran          0/1     <span class=m>1</span>            <span cla
     <span class=o>...</span>
 <span class=o>}</span>
 </code></pre></div><p>This Java API mimics the Kubernetes API very closely. All these arguments are meant for more advanced usages, but for our purposes, supplying <code>namespace</code> and <code>labelSelector</code> parameters are sufficient. The <code>labelselector</code> parameter is a string that can be formatted according to the <a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors>official documentation</a>. We will supply the label name of <code>team</code> as the value for that parameter. This ensures that returned pods will have that label present no matter what the label values are.</p>
-<p>This method returns a <code>V1DeploymentList</code> which has the <code>getItems()</code> method which can give us a list of <code>V1Deployment</code> objects. Once we have that list, we can use the java stream mechanism to transform each object to a team name, adding them to a java <em>set</em> which will take care of duplicates. Like the <code>V1Deployment</code> object, most Kubernetes built-in resources have a corresponding class in the <code>io.kubernetes.client.openapi.models</code> package.</p>
+<p>This method returns a <code>V1DeploymentList</code> which has the <code>getItems()</code> method which can give us a list of <code>V1Deployment</code> objects. Once we have that list, we can use the Java stream mechanism to transform each object to a team name, adding them to a Java <em>set</em> which will take care of duplicates. Like the <code>V1Deployment</code> object, most Kubernetes built-in resources have a corresponding class in the <code>io.kubernetes.client.openapi.models</code> package.</p>
 <blockquote>
 <p>There is a pattern at play here. In the <em>api</em> object you&rsquo;ll find methods of the form <code>listNamespacedSomething()</code> that pretty much takes this exact set of arguments. It returns a <code>V1SomethingList</code> object which has a <code>getItems()</code> method that returns a list of <code>V1Something</code> objects.</p>
 </blockquote>
-<p>Finally, we need to implement the <code>TeamAppsService.listTeamApps()</code> method. It will use the same <em>api</em> call but instead of mapping <code>V1Deployment</code> to a team name, it will map them to <code>TeamApp</code> objects. The relavant code will look like:</p>
+<p>Finally, we need to implement the <code>TeamAppsService.listTeamApps()</code> method. It will use the same <em>api</em> call but instead of mapping <code>V1Deployment</code> to a team name, it will map them to <code>TeamApp</code> objects. The relevant code will look like:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kd>public</span> <span class=n>List</span><span class=o>&lt;</span><span class=n>TeamApp</span><span class=o>&gt;</span> <span class=nf>listTeamApps</span><span class=o>(</span><span class=n>String</span> <span class=n>team</span><span class=o>)</span> <span class=o>{</span>
     <span class=k>return</span> <span class=n>appsV1Api</span><span class=o>.</span><span class=na>listNamespacedDeployment</span><span class=o>(</span>
                     <span class=n>namespace</span><span class=o>,</span>
@@ -372,11 +372,11 @@ app-bullheaded-tran          0/1     <span class=m>1</span>            <span cla
         <span class=k>return</span> <span class=n>service</span><span class=o>.</span><span class=na>listTeamApps</span><span class=o>(</span><span class=n>team</span><span class=o>);</span>
     <span class=o>}</span>
 <span class=o>}</span>
-</code></pre></div><p>Notice the use of <code>@RequiredArgsConstructor</code> annotation. It is another time saver from project lombok. It generates a class constructor that accepts parameters for all <code>private final</code> varaibles in the class and sets them accordingly. Spring then notices this constructor and has no choice but to inject the matching required beans. Even though our service implementation class is <code>SynchronousTeamAppsService</code>, spring will inject it for the <code>service</code> variable since that bean implements the <code>TeamAppsService</code> interface.</p>
+</code></pre></div><p>Notice the use of <code>@RequiredArgsConstructor</code> annotation. It is another time saver from project Lombok. It generates a class constructor that accepts parameters for all <code>private final</code> variables in the class and sets them accordingly. Spring then notices this constructor and has no choice but to inject the matching required beans. Even though our service implementation class is <code>SynchronousTeamAppsService</code>, spring will inject it for the <code>service</code> variable since that bean implements the <code>TeamAppsService</code> interface.</p>
 <h3 id=whats-next>Whats next</h3>
 <p>The APIs we used above make synchronous calls to the Kubernetes API server. In a <a href=../2021-09-08-show-deployments-async>future post</a>, we will explore how to enable the same functionality using asynchronous mechanisms provided by the Kubernetes API.</p>
 <h3 id=conclusion>Conclusion</h3>
-<p>In this post we introduced the <a href=https://github.com/kubernetes-client/java>Kubernetes Java Client</a>. It is relatively easy to use the library to automate, monitor, and/or extend the kubernetes platform. Most of the community uses <em>Go</em> programming language for these purposes and there are lots of good reasons to do that. Fast startup times, small footprint native executables, efficient threading support, etc.</p>
+<p>In this post we introduced the <a href=https://github.com/kubernetes-client/java>Kubernetes Java Client</a>. It is relatively easy to use the library to automate, monitor, and/or extend the Kubernetes platform. Most of the community uses <em>Go</em> programming language for these purposes and there are lots of good reasons to do that. Fast startup times, small footprint native executables, efficient threading support, etc.</p>
 <p>Java programs can achieve all these qualities as well. Java has a large open-source libraries ecosystem and the collective community has vast experience in designing resilient and scalable systems. The prevalence of spring-boot, reactive programming, and upcoming <a href=https://www.graalvm.org/reference-manual/native-image/>native-image capabilities with GraalVM</a> are good indicators that Java will stay relevant even in the Kubernetes ecosystem.</p>
 <h3 id=referenced-code>Referenced Code</h3>
 <p>To see working code from this post (with slight modifications), see the <a href=https://github.com/fnjoin/blog-team-apps>Git repository</a>.</p>
@@ -426,7 +426,7 @@ app-bullheaded-tran          0/1     <span class=m>1</span>            <span cla
 </section>
 <h4 class=see-also>See also</h4>
 <ul>
-<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - running in the cluster</a></li>
+<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - Running in the Cluster</a></li>
 <li><a href=/post/2021-09-08-show-deployments-async/>Kubernetes with Java - Asynchronous APIs</a></li>
 </ul>
 </article>

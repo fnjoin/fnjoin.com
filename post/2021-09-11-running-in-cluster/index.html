@@ -3,16 +3,16 @@
 <meta charset=utf-8>
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Kubernetes with Java - running in the cluster - fn:join</title>
+<title>Kubernetes with Java - Running in the Cluster - fn:join</title>
 <meta name=description content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC">
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","name":"Kubernetes with java running in the cluster"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - running in the cluster","description":"What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will\n Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster  Prerequisites  Access to source code for the project - https:\/\/github.","inLanguage":"en","wordCount":1985,"datePublished":"2021-09-11T00:00:00","dateModified":"2021-09-11T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, rbac"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
-<meta property="og:title" content="Kubernetes with Java - running in the cluster">
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","name":"Kubernetes with java running in the cluster"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Running in the Cluster","description":"What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will\n Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster  Prerequisites  Access to source code for the project - https:\/\/github.","inLanguage":"en","wordCount":1985,"datePublished":"2021-09-11T00:00:00","dateModified":"2021-09-11T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, rbac"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<meta property="og:title" content="Kubernetes with Java - Running in the Cluster">
 <meta property="og:description" content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC">
 <meta property="og:url" content="https://fnjoin.com/post/2021-09-11-running-in-cluster/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="fn:join">
-<meta name=twitter:title content="Kubernetes with Java - running in the cluster">
+<meta name=twitter:title content="Kubernetes with Java - Running in the Cluster">
 <meta name=twitter:description content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@fnjoin">
@@ -96,7 +96,7 @@
 <div class=row>
 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <div class=post-heading>
-<h1>Kubernetes with Java - running in the cluster</h1>
+<h1>Kubernetes with Java - Running in the Cluster</h1>
 <h2 class=post-subheading>Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC</h2>
 <span class=post-meta>
 <i class="fas fa-calendar"></i>&nbsp;Posted on September 11, 2021
@@ -386,7 +386,7 @@ BUILD SUCCESSFUL in 1m 47s
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>kubectl port-forward service/team-apps-service -n dev 8282:8181
 </code></pre></div><p>This will make port <code>8282</code> on localhost forward to port <code>8181</code> on the <code>team-apps-service</code> service, which will then forward the request to port <code>8080</code> on the app container.</p>
 <blockquote>
-<p>The decission to use different ports (8080, 8181, 8282) is just for demonstration purposes. It is to show the levels of port-forwarding or proxying that is involved in this way of accessing our app</p>
+<p>The decision to use different ports (8080, 8181, 8282) is just for demonstration purposes. It is to show the levels of port-forwarding or proxying that is involved in this way of accessing our app</p>
 </blockquote>
 <div class=blog-tags>
 <a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
@@ -400,7 +400,7 @@ BUILD SUCCESSFUL in 1m 47s
 <div class=share-box aria-hidden=true>
 <ul class=share>
 <li>
-<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&text=Kubernetes%20with%20Java%20-%20running%20in%20the%20cluster&via=fnjoin" target=_blank title="Share on Twitter">
+<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&text=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster&via=fnjoin" target=_blank title="Share on Twitter">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
@@ -410,22 +410,22 @@ BUILD SUCCESSFUL in 1m 47s
 </a>
 </li>
 <li>
-<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20running%20in%20the%20cluster" target=_blank title="Share on Reddit">
+<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on Reddit">
 <i class="fab fa-reddit"></i>
 </a>
 </li>
 <li>
-<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20running%20in%20the%20cluster" target=_blank title="Share on LinkedIn">
+<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on LinkedIn">
 <i class="fab fa-linkedin"></i>
 </a>
 </li>
 <li>
-<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20running%20in%20the%20cluster" target=_blank title="Share on StumbleUpon">
+<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on StumbleUpon">
 <i class="fab fa-stumbleupon"></i>
 </a>
 </li>
 <li>
-<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&description=Kubernetes%20with%20Java%20-%20running%20in%20the%20cluster" target=_blank title="Share on Pinterest">
+<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&description=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on Pinterest">
 <i class="fab fa-pinterest"></i>
 </a>
 </li>

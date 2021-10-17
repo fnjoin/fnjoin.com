@@ -6,7 +6,7 @@
 <title>Kubernetes with Java - Asynchronous APIs - fn:join</title>
 <meta name=description content="Choosing between synchronous and asynchronous Kubernetes API in Java">
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-09-08-show-deployments-async\/","name":"Kubernetes with java asynchronous apis"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Asynchronous APIs","description":"What are we going to do? This post builds on top of Kubernetes with Java - Introduction which relied on synchronous Kubernetes API to get information for apps runnings in Kubernetes cluster. In this post, we will\n Learn when to use synchronous and when to use asynchronous Kubernetes API mechanisms Learn how to use asynchronous Kubernetes API to exrtact deployments metadata How to use spring-boot profiles to conditionally enable functionality  Synchronous vs asynchronous APIs Kubernetes API provides two mechanisms to consume information for the clients.","inLanguage":"en","wordCount":976,"datePublished":"2021-09-08T00:00:00","dateModified":"2021-09-08T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, asynchronous"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-09-08-show-deployments-async\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-09-08-show-deployments-async\/","name":"Kubernetes with java asynchronous apis"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Asynchronous APIs","description":"What are we going to do? This post builds on top of Kubernetes with Java - Introduction which relied on synchronous Kubernetes API to get information for apps runnings in Kubernetes cluster. In this post, we will\n Learn when to use synchronous and when to use asynchronous Kubernetes API mechanisms Learn how to use asynchronous Kubernetes API to exrtact deployments metadata How to use spring-boot profiles to conditionally enable functionality  Synchronous vs asynchronous APIs Kubernetes API provides two mechanisms to consume information for the clients.","inLanguage":"en","wordCount":977,"datePublished":"2021-09-08T00:00:00","dateModified":"2021-09-08T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, asynchronous"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-09-08-show-deployments-async\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
 <meta property="og:title" content="Kubernetes with Java - Asynchronous APIs">
 <meta property="og:description" content="Choosing between synchronous and asynchronous Kubernetes API in Java">
 <meta property="og:url" content="https://fnjoin.com/post/2021-09-08-show-deployments-async/">
@@ -240,15 +240,15 @@
             <span class=o>.</span><span class=na>build</span><span class=o>();</span>
 <span class=o>}</span>
 </code></pre></div><h3 id=using-spring-profiles>Using Spring profiles</h3>
-<p>Now that we have two beans that implement <code>TeamAppsService</code> interface and our <em>controller</em> is expecting a single instance, we need to instruct Spring to instantiate only one of them. There are lots of ways of doing this - one of them is Spring profiles. Throught the <code>@Profile</code> annotations, we can controll which bean get instantiated and hence injected in our controller. The annotation usage will look like following:</p>
+<p>Now that we have two beans that implement <code>TeamAppsService</code> interface and our <em>controller</em> is expecting a single instance, we need to instruct Spring to instantiate only one of them. There are lots of ways of doing this - one of them is Spring profiles. By using the <code>@Profile</code> annotations, we can controll which bean gets instantiated and hence injected in our controller. The annotation usage will look like following:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=nd>@Profile</span><span class=o>(</span><span class=s>&#34;async&#34;</span><span class=o>)</span>
 <span class=kd>public</span> <span class=kd>class</span> <span class=nc>AsynchronousTeamAppsService</span> <span class=kd>implements</span> <span class=n>TeamAppsService</span> <span class=o>{</span> <span class=o>...</span> <span class=o>}</span>
 </code></pre></div><p>&mldr; and</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=nd>@Profile</span><span class=o>(</span><span class=s>&#34;!async&#34;</span><span class=o>)</span>
 <span class=kd>public</span> <span class=kd>class</span> <span class=nc>SynchronousTeamAppsService</span> <span class=kd>implements</span> <span class=n>TeamAppsService</span> <span class=o>{</span> <span class=o>...</span> <span class=o>}</span>
-</code></pre></div><p>When running with <code>async</code> spring profile, the <code>AsynchronousTeamAppsService</code> bean will get instantiated and <code>SynchronousTeamAppsService</code> will not. If not running with that profile (when not specified, <code>default</code> profile is in effect), the oppsite will be true. A very thorough write up on Spring Profiles can be <a href=https://www.baeldung.com/spring-profiles>found here</a>.</p>
+</code></pre></div><p>When running with <code>async</code> spring profile, the <code>AsynchronousTeamAppsService</code> bean will get instantiated and <code>SynchronousTeamAppsService</code> will not. If not running with that profile (when not specified, <code>default</code> profile is in effect), the opposite will be true. A very thorough write up on Spring Profiles can be <a href=https://www.baeldung.com/spring-profiles>found here</a>.</p>
 <h3 id=conclusion>Conclusion</h3>
-<p>In this post we introduced the asynchronous APIs so that we can use the <em>informer</em> and <em>indexer</em> mechanisms to cache <em>deployment</em> object metadata in the background within our app. In a future post, we will look at how to listen to the change events and react to them in near real-time.</p>
+<p>In this post we introduced the asynchronous APIs so that we can use the <em>informer</em> and <em>indexer</em> mechanisms to cache <em>deployment</em> object metadata in the background within our app. In a future post, we might look at how to listen to the change events and react to them in near real-time.</p>
 <h3 id=referenced-code>Referenced Code</h3>
 <p>To see working code from this post (with slight modifications), see the <a href=https://github.com/fnjoin/blog-team-apps>Git repository</a>.</p>
 <div class=blog-tags>
@@ -298,7 +298,7 @@
 </section>
 <h4 class=see-also>See also</h4>
 <ul>
-<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - running in the cluster</a></li>
+<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - Running in the Cluster</a></li>
 <li><a href=/post/2021-08-27-show-deployments/>Kubernetes with Java - Introduction</a></li>
 </ul>
 </article>
@@ -307,7 +307,7 @@
 <a href=https://fnjoin.com/post/2021-08-27-show-deployments/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - Introduction">&larr; Previous Post</a>
 </li>
 <li class=next>
-<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - running in the cluster">Next Post &rarr;</a>
+<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - Running in the Cluster">Next Post &rarr;</a>
 </li>
 </ul>
 </div>
