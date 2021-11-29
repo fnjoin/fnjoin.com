@@ -1,42 +1,302 @@
-<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Posts - fn:join</title><meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script><meta property="og:title" content="Posts"><meta property="og:url" content="https://fnjoin.com/post/"><meta property="og:type" content="website"><meta property="og:site_name" content="fn:join"><meta name=twitter:title content="Posts"><meta name=twitter:card content="summary"><meta name=twitter:site content="@fnjoin"><meta name=twitter:creator content="@fnjoin"><link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon><meta name=generator content="Hugo 0.83.1"><link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Posts - fn:join</title>
+<meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
+<meta property="og:title" content="Posts">
+<meta property="og:url" content="https://fnjoin.com/post/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fn:join">
+<meta name=twitter:title content="Posts">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@fnjoin">
+<meta name=twitter:creator content="@fnjoin">
+<link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon>
+<meta name=generator content="Hugo 0.89.4">
+<link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous>
+<link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous>
+<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+<link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+<div class=container-fluid>
+<div class=navbar-header>
+<button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
 <span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span><span class=icon-bar></span><span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fnjoin.com/>fn:join</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Blog href=/>Blog</a></li><li><a title=About href=/page/about/>About</a></li><li><a title=Tags href=/tags>Tags</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=https://fnjoin.com/>fn:join</a>
+</div>
+<div class="collapse navbar-collapse" id=main-navbar>
+<ul class="nav navbar-nav navbar-right">
+<li>
+<a title=Blog href=/>Blog</a>
+</li>
+<li>
+<a title=About href=/page/about/>About</a>
+</li>
+<li>
+<a title=Tags href=/tags>Tags</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>Posts</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on November 28, 2021
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header class=header-section>
+<div class="intro-header no-img">
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=post-heading>
+<h1>Posts</h1>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on November 28, 2021
 &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;0&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik, Archie Cowan</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=posts-list><article class=post-preview><a href=https://fnjoin.com/post/2021-11-28-reach-1m-deployments/><h2 class=post-title>Reach 1 Million Deployments</h2><h3 class=post-subtitle>In approximately 10 years or less</h3></a><p class=post-meta><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on November 28, 2021
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;4&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Archie Cowan</span></p><div class=post-entry>When will your team achieve 1M deployments in their environments? We do mean 10^6 deployments. 1M deployments may be difficult to believe if your team practices a monthly deployment or a quarterly deployment to your production environment. A team deploying to production every month will reach 10^6 deployments in a little over 83,333 years. A team deploying to production quarterly needs 250,000 years to reach 1M deployments.
-In November 2014, Dr.
-<a href=https://fnjoin.com/post/2021-11-28-reach-1m-deployments/ class=post-read-more>[Read More]</a></div><div class=blog-tags><a href=https://fnjoin.com//tags/practices/>practices</a>&nbsp;
-<a href=https://fnjoin.com//tags/deployments/>deployments</a>&nbsp;</div></article><article class=post-preview><a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/><h2 class=post-title>Kubernetes with Java - Running in the Cluster</h2><h3 class=post-subtitle>Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC</h3></a><p class=post-meta><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on September 11, 2021
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik</span></p><div class=post-entry>What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will
-Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster Prerequisites Access to source code for the project - https://github.
-<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/ class=post-read-more>[Read More]</a></div><div class=blog-tags><a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
-<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/rbac/>rbac</a>&nbsp;</div></article><article class=post-preview><a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/><h2 class=post-title>Kubernetes with Java - Asynchronous APIs</h2><h3 class=post-subtitle>Choosing between synchronous and asynchronous Kubernetes API in Java</h3></a><p class=post-meta><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on September 8, 2021
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik, Archie Cowan
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class=container role=main>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=posts-list>
+<article class=post-preview>
+<a href=https://fnjoin.com/post/2021-11-28-creating-images/>
+<h2 class=post-title>Kubernetes with Java - Creating Images</h2>
+<h3 class=post-subtitle>
+Bundling your Java apps into OCI images to run under Kubernetes
+</h3>
+</a>
+<p class=post-meta>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on November 28, 2021
 &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;5&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik</span></p><div class=post-entry>What are we going to do? This post builds on top of Kubernetes with Java - Introduction which relied on synchronous Kubernetes API to get information for apps runnings in Kubernetes cluster. In this post, we will
-Learn when to use synchronous and when to use asynchronous Kubernetes API mechanisms Learn how to use asynchronous Kubernetes API to exrtact deployments metadata How to use spring-boot profiles to conditionally enable functionality Synchronous vs asynchronous APIs Kubernetes API provides two mechanisms to consume information for the clients.
-<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/ class=post-read-more>[Read More]</a></div><div class=blog-tags><a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</p>
+<div class=post-entry>
+Building production quality images for Java apps To run a spring-boot app on k8s, you need to create a container image. The images need to be in the Open Container Image format. In this article, we will review how to create OCI images two different ways:
+Using a Dockerfile Using Cloud Native Buildpacks Note: The Open Container Image (OCI) format antecedent of the Docker image format as a standard specification.
+<a href=https://fnjoin.com/post/2021-11-28-creating-images/ class=post-read-more>[Read More]</a>
+</div>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
+<a href=https://fnjoin.com//tags/docker/>docker</a>&nbsp;
+<a href=https://fnjoin.com//tags/oci/>oci</a>&nbsp;
+<a href=https://fnjoin.com//tags/buildpacks/>buildpacks</a>&nbsp;
+</div>
+</article>
+<article class=post-preview>
+<a href=https://fnjoin.com/post/2021-11-28-reach-1m-deployments/>
+<h2 class=post-title>Reach 1 Million Deployments</h2>
+<h3 class=post-subtitle>
+In approximately 10 years or less
+</h3>
+</a>
+<p class=post-meta>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on November 28, 2021
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;4&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Archie Cowan
+</span>
+</p>
+<div class=post-entry>
+When will your team achieve 1M deployments in their environments? We do mean 10^6 deployments. 1M deployments may be difficult to believe if your team practices a monthly deployment or a quarterly deployment to your production environment. A team deploying to production every month will reach 10^6 deployments in a little over 83,333 years. A team deploying to production quarterly needs 250,000 years to reach 1M deployments.
+In November 2014, Dr.
+<a href=https://fnjoin.com/post/2021-11-28-reach-1m-deployments/ class=post-read-more>[Read More]</a>
+</div>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/practices/>practices</a>&nbsp;
+<a href=https://fnjoin.com//tags/deployments/>deployments</a>&nbsp;
+</div>
+</article>
+<article class=post-preview>
+<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/>
+<h2 class=post-title>Kubernetes with Java - Running in the Cluster</h2>
+<h3 class=post-subtitle>
+Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC
+</h3>
+</a>
+<p class=post-meta>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on September 11, 2021
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</p>
+<div class=post-entry>
+What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will
+Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster Prerequisites Access to source code for the project - https://github.
+<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/ class=post-read-more>[Read More]</a>
+</div>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
 <a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
 <a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/asynchronous/>asynchronous</a>&nbsp;</div></article><article class=post-preview><a href=https://fnjoin.com/post/2021-08-27-show-deployments/><h2 class=post-title>Kubernetes with Java - Introduction</h2><h3 class=post-subtitle>Getting started with the Kubernetes API client libraries for Java</h3></a><p class=post-meta><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on August 27, 2021
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;9&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik</span></p><div class=post-entry>What are we going to do? Learn how to initialize the k8s api client in a java spring-boot application Extract metadata from deployments in a namespace and transform that metadata into new views Prepare you for more sophisticated problem solving using the k8s API in future articles Motivation You have a few dozen different applications (as Kubernetes deployment resources) running in your cluster All of those applications use labels to designate the name of the team that manages that application, and the application name You want to provide APIs that: Lists all teams that have applications running in the cluster Lists all apps that belong to a team Scenario Assumption: you have minikube locally and you don&rsquo;t already have a namespace called dev.
-<a href=https://fnjoin.com/post/2021-08-27-show-deployments/ class=post-read-more>[Read More]</a></div><div class=blog-tags><a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+<a href=https://fnjoin.com//tags/rbac/>rbac</a>&nbsp;
+</div>
+</article>
+<article class=post-preview>
+<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/>
+<h2 class=post-title>Kubernetes with Java - Asynchronous APIs</h2>
+<h3 class=post-subtitle>
+Choosing between synchronous and asynchronous Kubernetes API in Java
+</h3>
+</a>
+<p class=post-meta>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on September 8, 2021
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;5&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</p>
+<div class=post-entry>
+What are we going to do? This post builds on top of Kubernetes with Java - Introduction which relied on synchronous Kubernetes API to get information for apps runnings in Kubernetes cluster. In this post, we will
+Learn when to use synchronous and when to use asynchronous Kubernetes API mechanisms Learn how to use asynchronous Kubernetes API to exrtact deployments metadata How to use spring-boot profiles to conditionally enable functionality Synchronous vs asynchronous APIs Kubernetes API provides two mechanisms to consume information for the clients.
+<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/ class=post-read-more>[Read More]</a>
+</div>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
 <a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;</div></article></div></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"><li><a href=mailto:contact@fnjoin.com title="Email us"><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fas fa-envelope fa-stack-1x fa-inverse"></i></span></a></li><li><a href=https://github.com/fnjoin title=GitHub><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fab fa-github fa-stack-1x fa-inverse"></i></span></a></li><li><a href=https://twitter.com/fnjoin title=Twitter><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fab fa-twitter fa-stack-1x fa-inverse"></i></span></a></li><li><a href=/post/index.xml title=RSS><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fas fa-rss fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="credits copyright text-muted"><a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
+<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
+<a href=https://fnjoin.com//tags/asynchronous/>asynchronous</a>&nbsp;
+</div>
+</article>
+<article class=post-preview>
+<a href=https://fnjoin.com/post/2021-08-27-show-deployments/>
+<h2 class=post-title>Kubernetes with Java - Introduction</h2>
+<h3 class=post-subtitle>
+Getting started with the Kubernetes API client libraries for Java
+</h3>
+</a>
+<p class=post-meta>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on August 27, 2021
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;9&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</p>
+<div class=post-entry>
+What are we going to do? Learn how to initialize the k8s api client in a java spring-boot application Extract metadata from deployments in a namespace and transform that metadata into new views Prepare you for more sophisticated problem solving using the k8s API in future articles Motivation You have a few dozen different applications (as Kubernetes deployment resources) running in your cluster All of those applications use labels to designate the name of the team that manages that application, and the application name You want to provide APIs that: Lists all teams that have applications running in the cluster Lists all apps that belong to a team Scenario Assumption: you have minikube locally and you don&rsquo;t already have a namespace called dev.
+<a href=https://fnjoin.com/post/2021-08-27-show-deployments/ class=post-read-more>[Read More]</a>
+</div>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
+<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
+</div>
+</article>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<ul class="list-inline text-center footer-links">
+<li>
+<a href=mailto:contact@fnjoin.com title="Email us">
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://github.com/fnjoin title=GitHub>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://twitter.com/fnjoin title=Twitter>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=/post/index.xml title=RSS>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="credits copyright text-muted">
+<a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
 &nbsp;&bull;&nbsp;&copy;
 2021
 &nbsp;&bull;&nbsp;
-<a href=https://fnjoin.com/>fn:join</a></p><p class="credits theme-by text-muted"></p></div></div></div></footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script><script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script><script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script><script src=https://fnjoin.com/js/main.js></script><script src=https://fnjoin.com/js/highlight.min.js></script><script>hljs.initHighlightingOnLoad()</script><script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script></body></html>
+<a href=https://fnjoin.com/>fn:join</a>
+</p>
+<p class="credits theme-by text-muted">
+</p>
+</div>
+</div>
+</div>
+</footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://fnjoin.com/js/main.js></script>
+<script src=https://fnjoin.com/js/highlight.min.js></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script>
+</body>
+</html>
