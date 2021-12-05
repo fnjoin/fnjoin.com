@@ -1,13 +1,136 @@
-<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Kubernetes with Java - Running in the Cluster - fn:join</title><meta name=description content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC"><meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","name":"Kubernetes with java running in the cluster"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Running in the Cluster","description":"What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will\n Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster  Prerequisites  Access to source code for the project - https:\/\/github.","inLanguage":"en","wordCount":1985,"datePublished":"2021-09-11T00:00:00","dateModified":"2021-09-11T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, rbac"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script><meta property="og:title" content="Kubernetes with Java - Running in the Cluster"><meta property="og:description" content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC"><meta property="og:url" content="https://fnjoin.com/post/2021-09-11-running-in-cluster/"><meta property="og:type" content="website"><meta property="og:site_name" content="fn:join"><meta name=twitter:title content="Kubernetes with Java - Running in the Cluster"><meta name=twitter:description content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC"><meta name=twitter:card content="summary"><meta name=twitter:site content="@fnjoin"><meta name=twitter:creator content="@fnjoin"><link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon><meta name=generator content="Hugo 0.83.1"><link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Kubernetes with Java - Running in the Cluster - fn:join</title>
+<meta name=description content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC">
+<meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","name":"Kubernetes with java running in the cluster"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Running in the Cluster","description":"What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will\n Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster  Prerequisites  Access to source code for the project - https:\/\/github.","inLanguage":"en","wordCount":1985,"datePublished":"2021-09-11T00:00:00","dateModified":"2021-09-11T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, rbac"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-09-11-running-in-cluster\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<meta property="og:title" content="Kubernetes with Java - Running in the Cluster">
+<meta property="og:description" content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC">
+<meta property="og:url" content="https://fnjoin.com/post/2021-09-11-running-in-cluster/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fn:join">
+<meta name=twitter:title content="Kubernetes with Java - Running in the Cluster">
+<meta name=twitter:description content="Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@fnjoin">
+<meta name=twitter:creator content="@fnjoin">
+<link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon>
+<meta name=generator content="Hugo 0.89.4">
+<link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous>
+<link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous>
+<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+<link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+<div class=container-fluid>
+<div class=navbar-header>
+<button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
 <span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span><span class=icon-bar></span><span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fnjoin.com/>fn:join</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Blog href=/>Blog</a></li><li><a title=About href=/page/about/>About</a></li><li><a title=Tags href=/tags>Tags</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=https://fnjoin.com/>fn:join</a>
+</div>
+<div class="collapse navbar-collapse" id=main-navbar>
+<ul class="nav navbar-nav navbar-right">
+<li>
+<a title=Blog href=/>Blog</a>
+</li>
+<li>
+<a title=About href=/page/about/>About</a>
+</li>
+<li>
+<a title=Tags href=/tags>Tags</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>Kubernetes with Java - Running in the Cluster</h1><h2 class=post-subheading>Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC</h2><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on September 11, 2021
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header class=header-section>
+<div class="intro-header no-img">
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=post-heading>
+<h1>Kubernetes with Java - Running in the Cluster</h1>
+<h2 class=post-subheading>Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC</h2>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on September 11, 2021
 &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><h3 id=what-are-we-going-to-do>What are we going to do?</h3><p>This post builds on top of <a href=../2021-08-27-show-deployments>Kubernetes with Java - Introduction</a> and <a href=../2021-09-08-show-deployments-async>Kubernetes with Java - Asynchronous APIs</a> posts which showed us how to interact with the Kubernetes API to list <em>deployment</em> resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will</p><ul><li>Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster</li><li>Learn how to package up a spring-boot app into an OCI image (aka Docker image)</li><li>Configure RBAC with <em>Role</em>, <em>RoleBinding</em>, and <em>ServiceAccount</em> so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more</li><li>Create <em>Deployment</em> and <em>Service</em> resources to deploy our spring-boot app and expose its API within the cluster</li></ul><h4 id=prerequisites>Prerequisites</h4><ul><li>Access to source code for the project - <a href=https://github.com/fnjoin/blog-team-apps>https://github.com/fnjoin/blog-team-apps</a></li><li>Access to a running Kubernetes cluster - we will assume <em>minikube</em></li><li>A cluster admin role so we can use RBAC based <em>role</em> and <em>service-account</em> within Kubernetes. If you started a minikube instance, you already have this role</li></ul><h3 id=connecting-to-kubernetes-api-inside-kubernetes-cluster>Connecting to Kubernetes API inside Kubernetes cluster</h3><p>Earlier, we created an <code>ApiClientConfig</code> class in <a href=../2021-08-27-show-deployments>Kubernetes with Java - Introduction</a> and added the mechanism to create an <em>api-client</em> which connects to the Kubernetes API server when the app is running <strong>outside</strong> of the cluster. We will now introduce a new bean which creates an <em>api-client</em> which knows how to communicate with the Kubernetes API server while running <strong>inside</strong> the cluster. Since other parts of the application expect only one <em>api-client</em> bean in the whole system, we have to configure that <em>api-client</em> appropriately depending on where the app is running. We will use the spring-boot profiles mechanism to differentiate between which environment we are running in when creating this bean.</p><p>We will introduce a <code>cloud</code> profile. When <code>cloud</code> profile is active, we will assume that the app is running inside the Kubernetes cluster, otherwise it will assume to be running outside. The code will look like the following:</p><div class=highlight><pre class=chroma><code class=language-java data-lang=java><span class=nd>@Bean</span>
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class=container role=main>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<article role=main class=blog-post>
+<h3 id=what-are-we-going-to-do>What are we going to do?</h3>
+<p>This post builds on top of <a href=../2021-08-27-show-deployments>Kubernetes with Java - Introduction</a> and <a href=../2021-09-08-show-deployments-async>Kubernetes with Java - Asynchronous APIs</a> posts which showed us how to interact with the Kubernetes API to list <em>deployment</em> resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will</p>
+<ul>
+<li>Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster</li>
+<li>Learn how to package up a spring-boot app into an OCI image (aka Docker image)</li>
+<li>Configure RBAC with <em>Role</em>, <em>RoleBinding</em>, and <em>ServiceAccount</em> so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more</li>
+<li>Create <em>Deployment</em> and <em>Service</em> resources to deploy our spring-boot app and expose its API within the cluster</li>
+</ul>
+<h4 id=prerequisites>Prerequisites</h4>
+<ul>
+<li>Access to source code for the project - <a href=https://github.com/fnjoin/blog-team-apps>https://github.com/fnjoin/blog-team-apps</a></li>
+<li>Access to a running Kubernetes cluster - we will assume <em>minikube</em></li>
+<li>A cluster admin role so we can use RBAC based <em>role</em> and <em>service-account</em> within Kubernetes. If you started a minikube instance, you already have this role</li>
+</ul>
+<h3 id=connecting-to-kubernetes-api-inside-kubernetes-cluster>Connecting to Kubernetes API inside Kubernetes cluster</h3>
+<p>Earlier, we created an <code>ApiClientConfig</code> class in <a href=../2021-08-27-show-deployments>Kubernetes with Java - Introduction</a> and added the mechanism to create an <em>api-client</em> which connects to the Kubernetes API server when the app is running <strong>outside</strong> of the cluster. We will now introduce a new bean which creates an <em>api-client</em> which knows how to communicate with the Kubernetes API server while running <strong>inside</strong> the cluster. Since other parts of the application expect only one <em>api-client</em> bean in the whole system, we have to configure that <em>api-client</em> appropriately depending on where the app is running. We will use the spring-boot profiles mechanism to differentiate between which environment we are running in when creating this bean.</p>
+<p>We will introduce a <code>cloud</code> profile. When <code>cloud</code> profile is active, we will assume that the app is running inside the Kubernetes cluster, otherwise it will assume to be running outside. The code will look like the following:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=nd>@Bean</span>
 <span class=nd>@Profile</span><span class=o>(</span><span class=s>&#34;cloud&#34;</span><span class=o>)</span>
 <span class=kd>public</span> <span class=n>ApiClient</span> <span class=nf>internalApiClient</span><span class=o>()</span> <span class=kd>throws</span> <span class=n>IOException</span> <span class=o>{</span>
     <span class=n>log</span><span class=o>.</span><span class=na>info</span><span class=o>(</span><span class=s>&#34;Using cluster client&#34;</span><span class=o>);</span>
@@ -38,9 +161,20 @@
         <span class=k>return</span> <span class=n>configFile</span><span class=o>;</span>
     <span class=o>}</span>
 <span class=o>}</span>
-</code></pre></div><p>Notice, the usage of <code>@Profile</code> annotations. Also, see how simple the <code>internalApiClient()</code> method is. This is because, connecting to Kubernetes API while running inside the cluster itslef is super easy and we will be relying on Kubernetes Role Based Access Control (RBAC) security mechanisms to define which Kubernetes API our app will have access to. Also, the API endpoint, its hostname, port, and the way communication is secured is standard across all distributions of Kubernetes and that is why we didn&rsquo;t have to specify any of that when creating this bean.</p><p>These are all the changes needed in our spring-boot application to be able to connect to the Kubernetes API while running inside the cluster itself. Now, we just need to make sure to run with the <code>cloud</code> profile when running inside the Kubernetes cluster.</p><h3 id=packaging-spring-boot-app-in-an-oci-image>Packaging spring-boot app in an OCI image</h3><p>Now that our code is ready to be run inside Kubernetes, we need to package it as an OCI image. We also need to settle on the image name and which image registry the image will be hosted in. For this to happen, we need access to a running docker daemon, be able to to connect to it, and have acsess to an image regitry where our OCI image will be stored.</p><blockquote><p>Linux has the capability to run a docker deamon natively. Also, docker-desktop is a good choice for Windows or Mac. Another interesting choice is exposing the docker daemon running inside minikube to the host machine - we will go with that last option.</p></blockquote><p>Since we are using spring-boot version 2.5.4, it is very easy to package up our application as an OCI image. The capability to create OCI images is actually a spring-boot maven/gradle plugin capablity. It has been around since spring-boot version 2.3.0. For earlier versions of spring-boot, the <a href=https://github.com/GoogleContainerTools/jib>Jib plugins for maven/gradle</a> would have been a good option. In this day and age, rolling your own image with a <em>Dockerfile</em> is not worth it for spring-boot applications because of these other options.</p><p>We can kill two birds with one stone (only figuratively, we love birds!) by exposing the docker daemon running inside our <em>minikube</em> instance. This docker daemon will not only build our app image but will act as the image registry when it is time for Kubernetes to download/run the image - there will be nothing to download as the image will already be there. On Linux and Mac, the following will do the trick:</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=nb>eval</span> <span class=k>$(</span>minikube -p minikube docker-env<span class=k>)</span>
-</code></pre></div><p>This command will expose the docker daemon in the current shell only. Next we will pick an image name. Lets say the image name will be <code>sample/team-apps:1.0</code>, we will issue the following command to create the image:</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell>./gradlew bootBuildImage --imageName<span class=o>=</span>sample/team-apps:1.0
-</code></pre></div><p>This will build the app into an executable spring-boot jar, and then bundle it up as a OCI image using the <a href=https://paketo.io/>Paketo Buildpacks</a>. First time run takes a couple of minutes but subsequent image builds only take a few seconds. The output will look something like this for a first time build:</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell>&gt; Task :bootBuildImage
+</code></pre></div><p>Notice, the usage of <code>@Profile</code> annotations. Also, see how simple the <code>internalApiClient()</code> method is. This is because, connecting to Kubernetes API while running inside the cluster itslef is super easy and we will be relying on Kubernetes Role Based Access Control (RBAC) security mechanisms to define which Kubernetes API our app will have access to. Also, the API endpoint, its hostname, port, and the way communication is secured is standard across all distributions of Kubernetes and that is why we didn&rsquo;t have to specify any of that when creating this bean.</p>
+<p>These are all the changes needed in our spring-boot application to be able to connect to the Kubernetes API while running inside the cluster itself. Now, we just need to make sure to run with the <code>cloud</code> profile when running inside the Kubernetes cluster.</p>
+<h3 id=packaging-spring-boot-app-in-an-oci-image>Packaging spring-boot app in an OCI image</h3>
+<p>Now that our code is ready to be run inside Kubernetes, we need to package it as an OCI image. We also need to settle on the image name and which image registry the image will be hosted in. For this to happen, we need access to a running docker daemon, be able to to connect to it, and have acsess to an image regitry where our OCI image will be stored.</p>
+<blockquote>
+<p>Linux has the capability to run a docker deamon natively. Also, docker-desktop is a good choice for Windows or Mac. Another interesting choice is exposing the docker daemon running inside minikube to the host machine - we will go with that last option.</p>
+</blockquote>
+<p>Since we are using spring-boot version 2.5.4, it is very easy to package up our application as an OCI image. The capability to create OCI images is actually a spring-boot maven/gradle plugin capablity. It has been around since spring-boot version 2.3.0. For earlier versions of spring-boot, the <a href=https://github.com/GoogleContainerTools/jib>Jib plugins for maven/gradle</a> would have been a good option. In this day and age, rolling your own image with a <em>Dockerfile</em> is not worth it for spring-boot applications because of these other options.</p>
+<p>We can kill two birds with one stone (only figuratively, we love birds!) by exposing the docker daemon running inside our <em>minikube</em> instance. This docker daemon will not only build our app image but will act as the image registry when it is time for Kubernetes to download/run the image - there will be nothing to download as the image will already be there. On Linux and Mac, the following will do the trick:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=nb>eval</span> <span class=k>$(</span>minikube -p minikube docker-env<span class=k>)</span>
+</code></pre></div><p>This command will expose the docker daemon in the current shell only. Next we will pick an image name. Lets say the image name will be <code>sample/team-apps:1.0</code>, we will issue the following command to create the image:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>./gradlew bootBuildImage --imageName<span class=o>=</span>sample/team-apps:1.0
+</code></pre></div><p>This will build the app into an executable spring-boot jar, and then bundle it up as a OCI image using the <a href=https://paketo.io/>Paketo Buildpacks</a>. First time run takes a couple of minutes but subsequent image builds only take a few seconds. The output will look something like this for a first time build:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>&gt; Task :bootBuildImage
 Building image <span class=s1>&#39;docker.io/sample/team-apps:1.0&#39;</span>
 
  &gt; Pulling builder image <span class=s1>&#39;docker.io/paketobuildpacks/builder:base&#39;</span> ..................................................
@@ -160,8 +294,13 @@ Building image <span class=s1>&#39;docker.io/sample/team-apps:1.0&#39;</span>
 Successfully built image <span class=s1>&#39;docker.io/sample/team-apps:1.0&#39;</span>
 
 BUILD SUCCESSFUL in 1m 47s
-</code></pre></div><p>There is a lot that went on with that image build - all the heavy lifting was done by the buildpacks. We will leave the details of using buikdpacks for to build app images for a future post.</p><h3 id=setup-rbac-in-kubernetes>Setup RBAC in Kubernetes</h3><p>To keep things simple, we will run our app in the same namespace (<code>dev</code>) that our sample apps from <a href=../2021-08-27-show-deployments>Kubernetes with Java - Introduction</a> post were running in. The details of the Kubernetes RBAC mechanism is described very well in the <a href=https://kubernetes.io/docs/reference/access-authn-authz/rbac/>official Kubernetes documentation</a> but we will just go over the highlights here.</p><p>We need to create a <em>Role</em> and a <em>ServiceAccount</em> first. Then create a <em>RoleBinding</em> to link the <em>Role</em> and <em>ServiceAccount</em> together. A <em>ServiceAccount</em> can be associated with many <em>Role</em> objects, the reverse is true as well. All three of these resources are configured using YAML definitions with <code>kubectl</code>. They are included in the source code in the <code>k8s</code> directory as <code>rbac.yaml</code>. Apply them to the cluster using the following command (assuming that we are running from the root of the project):</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell>kubectl apply -f k8s/rbac.yaml
-</code></pre></div><p>The <code>rbac.yaml</code> contents look like:</p><div class=highlight><pre class=chroma><code class=language-yaml data-lang=yaml><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</code></pre></div><p>There is a lot that went on with that image build - all the heavy lifting was done by the buildpacks. We will leave the details of using buikdpacks for to build app images for a future post.</p>
+<h3 id=setup-rbac-in-kubernetes>Setup RBAC in Kubernetes</h3>
+<p>To keep things simple, we will run our app in the same namespace (<code>dev</code>) that our sample apps from <a href=../2021-08-27-show-deployments>Kubernetes with Java - Introduction</a> post were running in. The details of the Kubernetes RBAC mechanism is described very well in the <a href=https://kubernetes.io/docs/reference/access-authn-authz/rbac/>official Kubernetes documentation</a> but we will just go over the highlights here.</p>
+<p>We need to create a <em>Role</em> and a <em>ServiceAccount</em> first. Then create a <em>RoleBinding</em> to link the <em>Role</em> and <em>ServiceAccount</em> together. A <em>ServiceAccount</em> can be associated with many <em>Role</em> objects, the reverse is true as well. All three of these resources are configured using YAML definitions with <code>kubectl</code>. They are included in the source code in the <code>k8s</code> directory as <code>rbac.yaml</code>. Apply them to the cluster using the following command (assuming that we are running from the root of the project):</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>kubectl apply -f k8s/rbac.yaml
+</code></pre></div><p>The <code>rbac.yaml</code> contents look like:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
 </span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ServiceAccount</span><span class=w>
 </span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
 </span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>team-apps</span><span class=w>
@@ -195,8 +334,12 @@ BUILD SUCCESSFUL in 1m 47s
 </span><span class=w>  </span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Role</span><span class=w>
 </span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>team-apps-role</span><span class=w>
 </span><span class=w>  </span><span class=nt>apiGroup</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io</span><span class=w>
-</span></code></pre></div><p>The <em>service-account</em> definition is just a name at this point. The <em>role</em> is where the Kubernetes API permissions are defined. In this case, we are only allowing watch, get, and list operations for the <em>deployment</em> resources. The <em>deployment</em> resources are part of the <code>apps</code> API group - this is the same reason when we dealt with the <code>V1Deployment</code> objects in Java, we got hold of them using the <code>AppsV1Api.listNamespacedDeployment*()</code> method. Finally, the <em>role-binding</em> binds the <em>role</em> and <em>service-account</em> together.</p><h3 id=deploy-the-app-in-kubernetes>Deploy the app in Kubernetes</h3><p>The source code includes the <code>app.yaml</code> file in <code>k8s</code> directory. This file includes the <em>Deployment</em> and <em>Service</em> resource definitions that we need to apply using <code>kubectl</code>. The command will look like the following:</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell>kubectl apply -f k8s/app.yaml
-</code></pre></div><p>The contents of <code>app.yaml</code> look like:</p><div class=highlight><pre class=chroma><code class=language-yaml data-lang=yaml><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></code></pre></div><p>The <em>service-account</em> definition is just a name at this point. The <em>role</em> is where the Kubernetes API permissions are defined. In this case, we are only allowing watch, get, and list operations for the <em>deployment</em> resources. The <em>deployment</em> resources are part of the <code>apps</code> API group - this is the same reason when we dealt with the <code>V1Deployment</code> objects in Java, we got hold of them using the <code>AppsV1Api.listNamespacedDeployment*()</code> method. Finally, the <em>role-binding</em> binds the <em>role</em> and <em>service-account</em> together.</p>
+<h3 id=deploy-the-app-in-kubernetes>Deploy the app in Kubernetes</h3>
+<p>The source code includes the <code>app.yaml</code> file in <code>k8s</code> directory. This file includes the <em>Deployment</em> and <em>Service</em> resource definitions that we need to apply using <code>kubectl</code>. The command will look like the following:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>kubectl apply -f k8s/app.yaml
+</code></pre></div><p>The contents of <code>app.yaml</code> look like:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
 </span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
 </span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
 </span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>team-apps</span><span class=w>
@@ -235,16 +378,137 @@ BUILD SUCCESSFUL in 1m 47s
 </span><span class=w>    </span>- <span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>8181</span><span class=w>
 </span><span class=w>      </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
 </span><span class=w>
-</span></code></pre></div><p>Notice the usage of <code>serviceAccountName</code> in the <em>deployment</em> manifest. Without speciying that, our app will not have permissions to use the Kubernetes API when running inside the cluster. Also, notice that we supplied the <code>SPRING_PROFILES_ACTIVE</code> environment variable be set to <code>cloud,async</code> so those Spring profiles are active when the app starts up.</p><h4 id=accessing-the-team-apps-api>Accessing the <em>team-apps</em> API</h4><p>If you want to access the API inside the cluster and you are trying to do it from a pod running in the <code>dev</code> namesapce then the URL would simply be - <code>http://team-apps-service:8181</code></p><p>If you want to access the API inside the cluster but you are trying to do it from a pod running in a namespace other than <code>dev</code> then the URL would be - <code>http://team-apps-service.dev.svc.cluster.local:8181</code></p><p>If you want to access the API from outside the cluster, there are a lot more options and complexities to be considered. But the easiest way to verify that the service is properly working is simply setting up a <em>port-forward</em> - which can be done with the following command:</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell>kubectl port-forward service/team-apps-service -n dev 8282:8181
-</code></pre></div><p>This will make port <code>8282</code> on localhost forward to port <code>8181</code> on the <code>team-apps-service</code> service, which will then forward the request to port <code>8080</code> on the app container.</p><blockquote><p>The decision to use different ports (8080, 8181, 8282) is just for demonstration purposes. It is to show the levels of port-forwarding or proxying that is involved in this way of accessing our app</p></blockquote><div class=blog-tags><a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+</span></code></pre></div><p>Notice the usage of <code>serviceAccountName</code> in the <em>deployment</em> manifest. Without speciying that, our app will not have permissions to use the Kubernetes API when running inside the cluster. Also, notice that we supplied the <code>SPRING_PROFILES_ACTIVE</code> environment variable be set to <code>cloud,async</code> so those Spring profiles are active when the app starts up.</p>
+<h4 id=accessing-the-team-apps-api>Accessing the <em>team-apps</em> API</h4>
+<p>If you want to access the API inside the cluster and you are trying to do it from a pod running in the <code>dev</code> namesapce then the URL would simply be - <code>http://team-apps-service:8181</code></p>
+<p>If you want to access the API inside the cluster but you are trying to do it from a pod running in a namespace other than <code>dev</code> then the URL would be - <code>http://team-apps-service.dev.svc.cluster.local:8181</code></p>
+<p>If you want to access the API from outside the cluster, there are a lot more options and complexities to be considered. But the easiest way to verify that the service is properly working is simply setting up a <em>port-forward</em> - which can be done with the following command:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>kubectl port-forward service/team-apps-service -n dev 8282:8181
+</code></pre></div><p>This will make port <code>8282</code> on localhost forward to port <code>8181</code> on the <code>team-apps-service</code> service, which will then forward the request to port <code>8080</code> on the app container.</p>
+<blockquote>
+<p>The decision to use different ports (8080, 8181, 8282) is just for demonstration purposes. It is to show the levels of port-forwarding or proxying that is involved in this way of accessing our app</p>
+</blockquote>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
 <a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
 <a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/rbac/>rbac</a>&nbsp;</div><hr><section id=social-share><div class="list-inline footer-links"><div class=share-box aria-hidden=true><ul class=share><li><a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&text=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster&via=fnjoin" target=_blank title="Share on Twitter"><i class="fab fa-twitter"></i></a></li><li><a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f" target=_blank title="Share on Facebook"><i class="fab fa-facebook"></i></a></li><li><a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on Reddit"><i class="fab fa-reddit"></i></a></li><li><a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on LinkedIn"><i class="fab fa-linkedin"></i></a></li><li><a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on StumbleUpon"><i class="fab fa-stumbleupon"></i></a></li><li><a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&description=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on Pinterest"><i class="fab fa-pinterest"></i></a></li></ul></div></div></section><h4 class=see-also>See also</h4><ul><li><a href=/post/2021-11-28-creating-images/>Kubernetes with Java - Creating Images</a></li><li><a href=/post/2021-09-08-show-deployments-async/>Kubernetes with Java - Asynchronous APIs</a></li><li><a href=/post/2021-08-27-show-deployments/>Kubernetes with Java - Introduction</a></li></ul></article><ul class="pager blog-pager"><li class=previous><a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - Asynchronous APIs">&larr; Previous Post</a></li><li class=next><a href=https://fnjoin.com/post/2021-11-28-how-many-deployments-amazon-does-in-a-day/ data-toggle=tooltip data-placement=top title="You Can Match How Many Deployments Amazon Does in a Day">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"><li><a href=mailto:contact@fnjoin.com title="Email us"><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fas fa-envelope fa-stack-1x fa-inverse"></i></span></a></li><li><a href=https://github.com/fnjoin title=GitHub><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fab fa-github fa-stack-1x fa-inverse"></i></span></a></li><li><a href=https://twitter.com/fnjoin title=Twitter><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fab fa-twitter fa-stack-1x fa-inverse"></i></span></a></li><li><a href title=RSS><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
-<i class="fas fa-rss fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="credits copyright text-muted"><a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
+<a href=https://fnjoin.com//tags/rbac/>rbac</a>&nbsp;
+</div>
+<hr>
+<section id=social-share>
+<div class="list-inline footer-links">
+<div class=share-box aria-hidden=true>
+<ul class=share>
+<li>
+<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&text=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster&via=fnjoin" target=_blank title="Share on Twitter">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+<li>
+<a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f" target=_blank title="Share on Facebook">
+<i class="fab fa-facebook"></i>
+</a>
+</li>
+<li>
+<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on Reddit">
+<i class="fab fa-reddit"></i>
+</a>
+</li>
+<li>
+<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on LinkedIn">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+<li>
+<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&title=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on StumbleUpon">
+<i class="fab fa-stumbleupon"></i>
+</a>
+</li>
+<li>
+<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-09-11-running-in-cluster%2f&description=Kubernetes%20with%20Java%20-%20Running%20in%20the%20Cluster" target=_blank title="Share on Pinterest">
+<i class="fab fa-pinterest"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<h4 class=see-also>See also</h4>
+<ul>
+<li><a href=/post/2021-11-28-creating-images/>Kubernetes with Java - Creating Images</a></li>
+<li><a href=/post/2021-09-08-show-deployments-async/>Kubernetes with Java - Asynchronous APIs</a></li>
+<li><a href=/post/2021-08-27-show-deployments/>Kubernetes with Java - Introduction</a></li>
+</ul>
+</article>
+<ul class="pager blog-pager">
+<li class=previous>
+<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - Asynchronous APIs">&larr; Previous Post</a>
+</li>
+<li class=next>
+<a href=https://fnjoin.com/post/2021-11-28-how-many-deployments-amazon-does-in-a-day/ data-toggle=tooltip data-placement=top title="You Can Match How Many Deployments Amazon Does in a Day">Next Post &rarr;</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<footer>
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<ul class="list-inline text-center footer-links">
+<li>
+<a href=mailto:contact@fnjoin.com title="Email us">
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://github.com/fnjoin title=GitHub>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://twitter.com/fnjoin title=Twitter>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href title=RSS>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="credits copyright text-muted">
+<a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
 &nbsp;&bull;&nbsp;&copy;
 2021
 &nbsp;&bull;&nbsp;
-<a href=https://fnjoin.com/>fn:join</a></p><p class="credits theme-by text-muted"></p></div></div></div></footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script><script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script><script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script><script src=https://fnjoin.com/js/main.js></script><script src=https://fnjoin.com/js/highlight.min.js></script><script>hljs.initHighlightingOnLoad()</script><script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script></body></html>
+<a href=https://fnjoin.com/>fn:join</a>
+</p>
+<p class="credits theme-by text-muted">
+</p>
+</div>
+</div>
+</div>
+</footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://fnjoin.com/js/main.js></script>
+<script src=https://fnjoin.com/js/highlight.min.js></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script>
+</body>
+</html>
