@@ -1,0 +1,504 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Config Updates Without Redeployment for Spring and Kubernetes - fn:join</title>
+<meta name=description content="Spring PropertySources and Kubernetes Configmaps">
+<meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2021-12-18-live-config-updates-spring-configmaps\/","name":"Config updates without redeployment for spring and kubernetes"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"Config Updates Without Redeployment for Spring and Kubernetes","description":"Here\u0026rsquo;s what you\u0026rsquo;ll accomplish by the end of this article:\n Create a small Spring Boot application that loads a property file from a configurable location overriding configuration that is packaged with the application. Package the application in a docker image and see how to override the config file via docker commands. Deploy the application to kubernetes. Use a Kubernetes Configmap to update your configuration without redeployment of your application. Learn about when using these methods together is recommended.","inLanguage":"en","wordCount":1825,"datePublished":"2021-12-18T00:00:00","dateModified":"2021-12-18T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["deployments, Kubernetes"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2021-12-18-live-config-updates-spring-configmaps\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<meta property="og:title" content="Config Updates Without Redeployment for Spring and Kubernetes">
+<meta property="og:description" content="Spring PropertySources and Kubernetes Configmaps">
+<meta property="og:url" content="https://fnjoin.com/post/2021-12-18-live-config-updates-spring-configmaps/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fn:join">
+<meta name=twitter:title content="Config Updates Without Redeployment for Spring and Kubernetes">
+<meta name=twitter:description content="Spring PropertySources and Kubernetes Configmaps">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@fnjoin">
+<meta name=twitter:creator content="@fnjoin">
+<link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon>
+<meta name=generator content="Hugo 0.89.4">
+<link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous>
+<link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous>
+<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+<link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+<div class=container-fluid>
+<div class=navbar-header>
+<button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=https://fnjoin.com/>fn:join</a>
+</div>
+<div class="collapse navbar-collapse" id=main-navbar>
+<ul class="nav navbar-nav navbar-right">
+<li>
+<a title=Blog href=/>Blog</a>
+</li>
+<li>
+<a title=About href=/page/about/>About</a>
+</li>
+<li>
+<a title=Tags href=/tags>Tags</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header class=header-section>
+<div class="intro-header no-img">
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=post-heading>
+<h1>Config Updates Without Redeployment for Spring and Kubernetes</h1>
+<h2 class=post-subheading>Spring PropertySources and Kubernetes Configmaps</h2>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on December 18, 2021
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;9&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Archie Cowan
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class=container role=main>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<article role=main class=blog-post>
+<p>Here&rsquo;s what you&rsquo;ll accomplish by the end of this article:</p>
+<ul>
+<li>Create a small Spring Boot application that loads a property file from a configurable location overriding configuration that is packaged with the application.</li>
+<li>Package the application in a docker image and see how to override the config file via docker commands.</li>
+<li>Deploy the application to kubernetes.</li>
+<li>Use a Kubernetes Configmap to update your configuration without redeployment of your application.</li>
+<li>Learn about when using these methods together is recommended.</li>
+</ul>
+<h2 id=starting-your-spring-boot-application-example>Starting your Spring Boot application example</h2>
+<p>A fast way to get a spring boot application started is the Spring Initializr. All you need for this example is Spring Boot and Spring WebFlux.</p>
+<p><a href="https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.6.1&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=webflux">Download the project from Spring Initializr</a></p>
+<p>In its initial state, this application should start and open a web server on port 8080 by running the <code>com.example.demo.DemoApplication</code> class.</p>
+<p>The next step is to add a controller that enables you to load a value. Create a new class in the <code>com.example.demo</code> package called <code>HelloController</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>org.springframework.beans.factory.annotation.Value</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.web.bind.annotation.GetMapping</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.web.bind.annotation.RestController</span><span class=o>;</span>
+
+<span class=nd>@RestController</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>HelloController</span> <span class=o>{</span>
+
+    <span class=nd>@GetMapping</span><span class=o>(</span><span class=n>path</span> <span class=o>=</span> <span class=s>&#34;/hello&#34;</span><span class=o>)</span>
+    <span class=kd>public</span> <span class=n>Greeting</span> <span class=nf>hello</span><span class=o>(</span><span class=nd>@Value</span><span class=o>(</span><span class=s>&#34;${message}&#34;</span><span class=o>)</span> <span class=n>String</span> <span class=n>message</span> <span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>Greeting</span><span class=o>(</span><span class=n>message</span><span class=o>);</span>
+    <span class=o>}</span>
+
+<span class=o>}</span>
+
+<span class=kd>class</span> <span class=nc>Greeting</span> <span class=o>{</span>
+    <span class=kd>private</span> <span class=n>String</span> <span class=n>greeting</span><span class=o>;</span>
+    <span class=kd>public</span> <span class=nf>Greeting</span><span class=o>(</span><span class=n>String</span> <span class=n>greeting</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>greeting</span> <span class=o>=</span> <span class=n>greeting</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=n>String</span> <span class=nf>getGreeting</span><span class=o>()</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>greeting</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=kd>public</span> <span class=kt>void</span> <span class=nf>setGreeting</span><span class=o>(</span><span class=n>String</span> <span class=n>greeting</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>greeting</span> <span class=o>=</span> <span class=n>greeting</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</code></pre></div><p>A quick breakdown fo what we have here:</p>
+<ul>
+<li><code>@RestController</code> tells spring this class provides endpoints to make available on the web server</li>
+<li><code>@GetMapping(path = "/hello")</code> creates an endpoint on the path <code>/hello</code></li>
+<li><code>@Value("${message}") String message</code> injects a property called message whenever this function is called</li>
+<li>The <code>Greeting</code> class is just a struct for us to return in our message</li>
+</ul>
+<p>Next, let&rsquo;s define the <code>message</code> property in <code>src/main/resources/application.properties</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=nv>message</span><span class=o>=</span>This is the default message.
+</code></pre></div><p>At this point, when you run the application and make a GET request to /hello, you&rsquo;ll see receive this response:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=p>{</span><span class=nt>&#34;greeting&#34;</span><span class=p>:</span><span class=s2>&#34;This is the default message.&#34;</span><span class=p>}</span>
+</code></pre></div><p>The <code>application.proeprties</code> file cannot be updated at runtime. But, you can provide spring configuration instructions to load a configuration from another source. For this, we need an additional dependency and a configuration class.</p>
+<p>First, the dependency is <code>commons-configuration</code>. Add this to your dependencies in the <code>pom.xml</code></p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=nt>&lt;dependency&gt;</span>
+  <span class=nt>&lt;groupId&gt;</span>commons-configuration<span class=nt>&lt;/groupId&gt;</span>
+  <span class=nt>&lt;artifactId&gt;</span>commons-configuration<span class=nt>&lt;/artifactId&gt;</span>
+  <span class=nt>&lt;version&gt;</span>1.10<span class=nt>&lt;/version&gt;</span>
+<span class=nt>&lt;/dependency&gt;</span>
+</code></pre></div><p>This package provides a component that loads a property file from disk and then reloads it when changes are detected. You need to wrap <code>PropertiesConfiguration</code> from <code>commons-configuration</code> into a class that provides the <code>PropertySource</code> interface so that Spring can bring this configuration into the application context and inject the values.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>org.apache.commons.configuration.PropertiesConfiguration</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.core.env.PropertySource</span><span class=o>;</span>
+
+<span class=cm>/**
+</span><span class=cm> * ReloadablePropertySource wraps a commons-config PropertiesConfiguration
+</span><span class=cm> * in a Spring PropertySource interface so that a PrpoertiesConfiguration
+</span><span class=cm> * can be added to a Spring Environment Property Sources list.
+</span><span class=cm> */</span>
+<span class=kd>class</span> <span class=nc>ReloadablePropertySource</span> <span class=kd>extends</span> <span class=n>PropertySource</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=n>PropertiesConfiguration</span> <span class=n>propertiesConfiguration</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>ReloadablePropertySource</span><span class=o>(</span><span class=n>String</span> <span class=n>name</span><span class=o>,</span>
+                        <span class=n>PropertiesConfiguration</span> <span class=n>propertiesConfiguration</span><span class=o>)</span> <span class=o>{</span>
+        <span class=kd>super</span><span class=o>(</span><span class=n>name</span><span class=o>);</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>propertiesConfiguration</span> <span class=o>=</span> <span class=n>propertiesConfiguration</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Override</span>
+    <span class=kd>public</span> <span class=n>Object</span> <span class=nf>getProperty</span><span class=o>(</span><span class=n>String</span> <span class=n>s</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>return</span> <span class=n>propertiesConfiguration</span><span class=o>.</span><span class=na>getProperty</span><span class=o>(</span><span class=n>s</span><span class=o>);</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</code></pre></div><p>Next you need to instantiate this in a spring configuration class.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=kn>import</span> <span class=nn>org.apache.commons.configuration.PropertiesConfiguration</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.apache.commons.configuration.reloading.FileChangedReloadingStrategy</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.beans.factory.annotation.Autowired</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.beans.factory.annotation.Value</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.boot.autoconfigure.condition.ConditionalOnProperty</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.context.annotation.Bean</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.context.annotation.Configuration</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.core.env.ConfigurableEnvironment</span><span class=o>;</span>
+<span class=kn>import</span> <span class=nn>org.springframework.core.env.MutablePropertySources</span><span class=o>;</span>
+
+<span class=kn>import</span> <span class=nn>java.io.File</span><span class=o>;</span>
+
+<span class=nd>@Configuration</span>
+<span class=kd>public</span> <span class=kd>class</span> <span class=nc>DemoConfiguration</span> <span class=o>{</span>
+
+    <span class=kd>private</span> <span class=n>ConfigurableEnvironment</span> <span class=n>env</span><span class=o>;</span>
+
+    <span class=kd>public</span> <span class=nf>DemoConfiguration</span><span class=o>(</span><span class=nd>@Autowired</span> <span class=n>ConfigurableEnvironment</span> <span class=n>env</span><span class=o>)</span> <span class=o>{</span>
+        <span class=k>this</span><span class=o>.</span><span class=na>env</span> <span class=o>=</span> <span class=n>env</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Bean</span>
+    <span class=nd>@ConditionalOnProperty</span><span class=o>(</span><span class=n>name</span> <span class=o>=</span> <span class=s>&#34;spring.config.location&#34;</span><span class=o>,</span>
+                            <span class=n>matchIfMissing</span> <span class=o>=</span> <span class=kc>false</span><span class=o>)</span>
+    <span class=kd>public</span> <span class=n>PropertiesConfiguration</span> <span class=nf>propertiesConfiguration</span><span class=o>(</span>
+            <span class=nd>@Value</span><span class=o>(</span><span class=s>&#34;${spring.config.location}&#34;</span><span class=o>)</span> <span class=n>String</span> <span class=n>path</span><span class=o>)</span> <span class=kd>throws</span> <span class=n>Exception</span> <span class=o>{</span>
+        <span class=n>PropertiesConfiguration</span> <span class=n>configuration</span> <span class=o>=</span>
+            <span class=k>new</span> <span class=n>PropertiesConfiguration</span><span class=o>(</span> <span class=k>new</span> <span class=n>File</span><span class=o>(</span><span class=n>path</span><span class=o>));</span>
+        <span class=n>FileChangedReloadingStrategy</span> <span class=n>fcrs</span> <span class=o>=</span> <span class=k>new</span> <span class=n>FileChangedReloadingStrategy</span><span class=o>();</span>
+        <span class=n>fcrs</span><span class=o>.</span><span class=na>setRefreshDelay</span><span class=o>(</span><span class=n>1000</span><span class=o>);</span>
+        <span class=n>configuration</span><span class=o>.</span><span class=na>setReloadingStrategy</span><span class=o>(</span><span class=n>fcrs</span><span class=o>);</span>
+        <span class=k>return</span> <span class=n>configuration</span><span class=o>;</span>
+    <span class=o>}</span>
+
+    <span class=nd>@Bean</span>
+    <span class=nd>@ConditionalOnProperty</span><span class=o>(</span><span class=n>name</span> <span class=o>=</span> <span class=s>&#34;spring.config.location&#34;</span><span class=o>,</span>
+                            <span class=n>matchIfMissing</span> <span class=o>=</span> <span class=kc>false</span><span class=o>)</span>
+    <span class=kd>public</span> <span class=n>ReloadablePropertySource</span> <span class=nf>reloadablePropertySource</span><span class=o>(</span>
+            <span class=n>PropertiesConfiguration</span> <span class=n>properties</span><span class=o>)</span> <span class=o>{</span>
+        <span class=n>ReloadablePropertySource</span> <span class=n>ret</span> <span class=o>=</span>
+            <span class=k>new</span> <span class=n>ReloadablePropertySource</span><span class=o>(</span><span class=s>&#34;dynamic&#34;</span><span class=o>,</span> <span class=n>properties</span><span class=o>);</span>
+        <span class=n>MutablePropertySources</span> <span class=n>sources</span> <span class=o>=</span> <span class=n>env</span><span class=o>.</span><span class=na>getPropertySources</span><span class=o>();</span>
+        <span class=n>sources</span><span class=o>.</span><span class=na>addFirst</span><span class=o>(</span><span class=n>ret</span><span class=o>);</span>
+        <span class=k>return</span> <span class=n>ret</span><span class=o>;</span>
+    <span class=o>}</span>
+<span class=o>}</span>
+</code></pre></div><p>Here&rsquo;s what&rsquo;s happening in <code>DemoConfiguration</code> <sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>:</p>
+<ul>
+<li><code>@ConditionalOnProperty(name = "spring.config.location", matchIfMissing = false)</code> gates these methods from running unless a property <code>spring.config.location</code> is available. You will pass this on the command line with a system property in a few steps.</li>
+<li>the <code>propertiesConfiguration</code> method creates a <code>commons-configuration</code> <code>PropertiesConfiguration</code> object that refreshes after 1 second if there are nay changes.</li>
+<li>the <code>reloadablePropertySource</code> method takes the <code>PropertiesConfiguration</code> you created and makes it the first place Spring will look for properties with <code>sources.addFirst(ret)</code>.</li>
+</ul>
+<p>Try rerunning your application and verify that it behaves the same as before. Nothing should have changed yet with the way your endpoint works.</p>
+<p>Now, add a new folder in the root of your project called <code>k8s</code> and create a new file <code>config.properties</code> with this content:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=nv>message</span><span class=o>=</span>Hello my name is Jake
+</code></pre></div><p>This will be your override file. The embedded <code>application.properties</code> should remain in place.</p>
+<p>Including the following system property argument in your VM options will define the property needed for the configuration override you just created in <code>DemoConfiguration</code> to run.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>-Dspring.config.location<span class=o>=</span>k8s/config.properties
+</code></pre></div><p>When you recompile and rerun your application, the <code>/hello</code> endpoint will now return the message in <code>k8s/config.properties</code> instead of <code>application.properties</code>! Try updating <code>config.properties</code> and observe how the message variable changes.</p>
+<h2 id=running-the-demoapplication-in-docker>Running the DemoApplication in Docker</h2>
+<p>As a sanity check before you jump into Kubernetes, verify the application behavior using Docker only. This can save you some time if you have issues.</p>
+<p>First you need to build a docker image with your application. As outlined in <a href=/post/2021-11-28-creating-images>creating images for java apps on kubernetes</a>, you can quickly build an image for a Spring Boot application with buildpacks.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>mvn spring-boot:build-image -Dspring-boot.build-image.imageName<span class=o>=</span>demoapplication:0.1
+</code></pre></div><p>This gets you a pretty robust image for your application without having to create a Dockerfile.</p>
+<p>Now you can run your application with docker like this:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>docker run -it --rm -p 8081:8080 demoapplication:0.1
+</code></pre></div><p>Upon running a GET request on <code>/hello</code> you are greeted with the default message.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>curl http://localhost:8081/hello <span class=p>;</span> <span class=nb>echo</span>
+<span class=o>{</span><span class=s2>&#34;greeting&#34;</span>:<span class=s2>&#34;Default message in application.properties&#34;</span><span class=o>}</span>
+</code></pre></div><p>You just need to specify the VM arguments using an environment variable as well as mount a volume including your <code>config.properties</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>docker run -it --rm -p 8081:8080 <span class=se>\
+</span><span class=se></span>  -e <span class=nv>JAVA_TOOL_OPTIONS</span><span class=o>=</span><span class=s1>&#39;-Dspring.config.location=/hello/config.properties&#39;</span> <span class=se>\
+</span><span class=se></span>  -v <span class=nv>$PWD</span>/k8s/:/hello/  <span class=se>\
+</span><span class=se></span>  demoapplication:0.1
+</code></pre></div><p>You should see Jake in the greeting now.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>curl http://localhost:8081/hello <span class=p>;</span> <span class=nb>echo</span>
+<span class=o>{</span><span class=s2>&#34;greeting&#34;</span>:<span class=s2>&#34;Hello my name is Jake&#34;</span><span class=o>}</span>
+</code></pre></div><p>Now you can update <code>k8s/config.properties</code> to verify that the properties update live.</p>
+<p>config.properties</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=nv>message</span><span class=o>=</span>Hello my name is Enzo
+</code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>curl http://localhost:8081/hello <span class=p>;</span> <span class=nb>echo</span>
+<span class=o>{</span><span class=s2>&#34;greeting&#34;</span>:<span class=s2>&#34;Hello my name is Enzo&#34;</span><span class=o>}</span>
+</code></pre></div><p>You&rsquo;re doing great! The application works in docker and the properties update without restarting the application.</p>
+<h1 id=now-with-kubernetes>Now with Kubernetes</h1>
+<p>Now for some fun with kubernetes!</p>
+<hr>
+<p><em><strong>Kubernetes setup</strong></em></p>
+<p>These steps should work with any recent version of Kubernetes. Minikube is a great resource if you need a local environment. In order to make your docker images available to Kubernetes, you will need access to a container registry. With Minikube, you can skip over the registry effort by attaching your docker client to the docker service in Minikube</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=nb>eval</span> <span class=k>$(</span>minikube docker-env<span class=k>)</span>
+</code></pre></div><p>Then use docker as you normally would. <a href=https://minikube.sigs.k8s.io/docs/commands/docker-env/>More info here</a>.</p>
+<p>Otherwise, you can use <code>minikube image load</code> to copy the image from your docker environment to Minikube. <a href=https://minikube.sigs.k8s.io/docs/commands/image/>More info here</a>.</p>
+<hr>
+<p>As a first step, create a namespace for the work you will do. The big benefit of this is that you will be able to start from a clean slate very easily by deleting the namespace.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl create namespace hello-ns
+</code></pre></div><p>Then, set <code>hello-ns</code> to the default namespace in your kubectl context so that you don&rsquo;t have to add <code>-n hello-ns</code> to all your commands.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl config set-context --current --namespace<span class=o>=</span>hello-ns
+</code></pre></div><p>Now the work you do going forward will apply to the <code>hello-ns</code> namespace only.</p>
+<h3 id=configmap>ConfigMap</h3>
+<p>As a first step, create the configmap from the config.properties file in your k8s folder. The following command generates the configmap manifest and installs it in the hello-ns namespace.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl create configmap hello-config --from-file<span class=o>=</span>k8s/config.properties
+</code></pre></div><p>You can see what was created with <code>describe</code>:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl describe configmap hello-config
+Name:         hello-config
+Namespace:    hello-ns
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+<span class=nv>Data</span>
+<span class=o>====</span>
+config.properties:
+----
+<span class=nv>message</span><span class=o>=</span>Hello my name is Jake
+
+<span class=nv>BinaryData</span>
+<span class=o>====</span>
+
+Events:  &lt;none&gt;
+</code></pre></div><p>Or to view or save a yaml version of the configmap, use <code>get</code>:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl get configmap hello-config -o yaml
+</code></pre></div><p>You can see, a config.properties contains the data from your properties file. You can edit the manifest with <code>kubectl edit configmap hello-config</code> or use <code>kubectl apply -f manifest.yml</code> to make changes.</p>
+<p>Next to get our application running in kubernetes, make sure your image is either in an accessible container registry or available locally.</p>
+<p>Now, create a deployment with your <code>demoapplication:0.1</code> image.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl create deployment helloapp --image<span class=o>=</span>demoapplication:0.1
+</code></pre></div><p>And then expose the deployment with a load balancer.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>kubectl expose deployment helloapp --type<span class=o>=</span>LoadBalancer --port <span class=m>8080</span>
+</code></pre></div><p>If you&rsquo;re running minikube, you&rsquo;ll want to start a tunnel. This command blocks so open a new terminal window.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash>minikube tunnel
+</code></pre></div><p>Now, when you access <a href=http://localhost:8080/hello>http://localhost:8080/hello</a> you should see the default response from your application.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=p>{</span><span class=nt>&#34;greeting&#34;</span><span class=p>:</span><span class=s2>&#34;This is the default message.&#34;</span><span class=p>}</span>
+</code></pre></div><p>You don&rsquo;t yet see the value from the configmap because you haven&rsquo;t wired up the config map with your deploy yet. That&rsquo;s next!</p>
+<p>To make config.properties available to your helloapp pods, you must add a volume and a volumeMount to the deployment spec. Below are the parts to add to your manifest using <code>kubectl edit deployment helloapp</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span><span class=w>        </span><span class=l>...</span><span class=w>
+</span><span class=w>        </span>- <span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>demoapplication:0.1</span><span class=w>
+</span><span class=w>          </span><span class=nt>volumeMounts</span><span class=p>:</span><span class=w>
+</span><span class=w>            </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>config-vol</span><span class=w>
+</span><span class=w>              </span><span class=nt>mountPath</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;/hello/&#34;</span><span class=w>
+</span><span class=w>      </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
+</span><span class=w>      </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>config-vol</span><span class=w>
+</span><span class=w>        </span><span class=nt>configMap</span><span class=p>:</span><span class=w>
+</span><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>hello-config</span><span class=w>
+</span></code></pre></div><p>At this point you can <code>kubectl exec -it podname -- /bin/bash</code> to see the <code>/hello/</code> directory in your pod.</p>
+<p>What remains is to configure the application to look at <code>/hello/config.properties</code> for the configuration override. Edit the deployment one last time and set the JAVA_TOOL_OPTIONS variable.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span>- <span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>demoapplication:0.1</span><span class=w>
+</span><span class=w>      </span><span class=nt>env</span><span class=p>:</span><span class=w>
+</span><span class=w>        </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>JAVA_TOOL_OPTIONS</span><span class=w>
+</span><span class=w>          </span><span class=nt>value</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;-Dspring.config.location=/hello/config.properties&#34;</span><span class=w>
+</span></code></pre></div><p>After you edit this time, Kubernetes cycles in a new version of your pod. Now, the greeting on your endpoint reflects the values in <code>/hello/config.properties</code>! Congrats!</p>
+<p>Now, when you access <a href=http://localhost:8080/hello>http://localhost:8080/hello</a> you should see the default response from your application.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=p>{</span><span class=nt>&#34;greeting&#34;</span><span class=p>:</span><span class=s2>&#34;Hello my name is Jake&#34;</span><span class=p>}</span>
+</code></pre></div><p>Now, when you edit the configmap, the file in your pods will reflect the changes after 1 minute by default <sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>. Spring will detect the changes and reload the properties file.</p>
+<h2 id=when-this-is-recommended>When this is recommended</h2>
+<p>There are infinite options for application configuration and this is just one more way to do it! If you have an interest in using spring boot with configmaps, this is a good place to start. However, is this right for your production environment?</p>
+<p>Here are some example criteria to consider:</p>
+<ul>
+<li>You&rsquo;re already running Kubernetes.</li>
+<li>There is a business benefit to updating configuration without restarting your application.</li>
+<li>The time to deploy a configuration update is much faster than simply deploying a new container image.</li>
+<li>You prefer not to run a dedicated configuation server in addition to your application <sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>.</li>
+<li>Your application configuration is contextual to the Kubernetes namespace in which it runs and you operate many namespaces with different configurations deployed.</li>
+<li>Multiple applications running in the same namespace share configuration values.</li>
+<li>Configuration is committed to your source control system.</li>
+<li>Configuration is delivered to Kubernetes from source control via deployment automation.</li>
+</ul>
+<p>You may have additional criteria for your environment. It&rsquo;s good to think it through.</p>
+<h2 id=enjoy>Enjoy!</h2>
+<p>Hope this helps you on your journey with Spring Boot and Kuberenetes. Please reach out if you&rsquo;d like to hear more about these topics.</p>
+<section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>The configuration classes demonstrated here were adapted from a <a href=https://www.baeldung.com/spring-reloading-properties>Baeldung article</a> with a few critical changes.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+<li id=fn:2 role=doc-endnote>
+<p><code>--sync-frequency</code> is a <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#mounted-configmaps-are-updated-automatically>kubelet config option</a> - it defaults to 1m.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+<li id=fn:3 role=doc-endnote>
+<p>The <code>spring-cloud-kubernetes</code> package provides additional <a href=https://docs.spring.io/spring-cloud-kubernetes/docs/current/reference/html/#spring-cloud-kubernetes-configuration-watcher>systems</a> that reduce the time to update properties from configmaps without having to adjust the kubelet sync frequency.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/deployments/>deployments</a>&nbsp;
+<a href=https://fnjoin.com//tags/kubernetes/>Kubernetes</a>&nbsp;
+</div>
+<hr>
+<section id=social-share>
+<div class="list-inline footer-links">
+<div class=share-box aria-hidden=true>
+<ul class=share>
+<li>
+<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-12-18-live-config-updates-spring-configmaps%2f&text=Config%20Updates%20Without%20Redeployment%20for%20Spring%20and%20Kubernetes&via=fnjoin" target=_blank title="Share on Twitter">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+<li>
+<a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2ffnjoin.com%2fpost%2f2021-12-18-live-config-updates-spring-configmaps%2f" target=_blank title="Share on Facebook">
+<i class="fab fa-facebook"></i>
+</a>
+</li>
+<li>
+<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-12-18-live-config-updates-spring-configmaps%2f&title=Config%20Updates%20Without%20Redeployment%20for%20Spring%20and%20Kubernetes" target=_blank title="Share on Reddit">
+<i class="fab fa-reddit"></i>
+</a>
+</li>
+<li>
+<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-12-18-live-config-updates-spring-configmaps%2f&title=Config%20Updates%20Without%20Redeployment%20for%20Spring%20and%20Kubernetes" target=_blank title="Share on LinkedIn">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+<li>
+<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-12-18-live-config-updates-spring-configmaps%2f&title=Config%20Updates%20Without%20Redeployment%20for%20Spring%20and%20Kubernetes" target=_blank title="Share on StumbleUpon">
+<i class="fab fa-stumbleupon"></i>
+</a>
+</li>
+<li>
+<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2021-12-18-live-config-updates-spring-configmaps%2f&description=Config%20Updates%20Without%20Redeployment%20for%20Spring%20and%20Kubernetes" target=_blank title="Share on Pinterest">
+<i class="fab fa-pinterest"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<h4 class=see-also>See also</h4>
+<ul>
+<li><a href=/post/2021-12-04-accelerate-with-feature-flags/>Accelerate Your Deployment Velocity with Feature flags</a></li>
+<li><a href=/post/2021-11-28-how-many-deployments-amazon-does-in-a-day/>You Can Match How Many Deployments Amazon Does in a Day</a></li>
+</ul>
+</article>
+<ul class="pager blog-pager">
+<li class=previous>
+<a href=https://fnjoin.com/post/2021-12-04-accelerate-with-feature-flags/ data-toggle=tooltip data-placement=top title="Accelerate Your Deployment Velocity with Feature flags">&larr; Previous Post</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<footer>
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<ul class="list-inline text-center footer-links">
+<li>
+<a href=mailto:contact@fnjoin.com title="Email us">
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://github.com/fnjoin title=GitHub>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://twitter.com/fnjoin title=Twitter>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href title=RSS>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="credits copyright text-muted">
+<a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
+&nbsp;&bull;&nbsp;&copy;
+2021
+&nbsp;&bull;&nbsp;
+<a href=https://fnjoin.com/>fn:join</a>
+</p>
+<p class="credits theme-by text-muted">
+Views and opinions expressed by the authors are solely their own and are not the views of their employers.
+</p>
+</div>
+</div>
+</div>
+</footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://fnjoin.com/js/main.js></script>
+<script src=https://fnjoin.com/js/highlight.min.js></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script>
+</body>
+</html>
