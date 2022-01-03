@@ -4,16 +4,16 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Kubernetes with Java - Handling Events - fn:join</title>
-<meta name=description content="Handling Kubernetes events in Java">
+<meta name=description content="Handling Kubernetes API events in Java">
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2022-01-03-k8s-event-handling\/","name":"Kubernetes with java handling events"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Handling Events","description":"This post is a continuation of Kubernetes with Java - Asynchronous APIs which showed us how to interact with the Kubernetes API to list deployment resources on demand. In this post, we will learn how to handle Kubernetes API events in near real-time.\nAn example use case for this capability might be to send a notification to a slack channel whenever an app deployment is started or when it finishes and becomes ready to be consumed.","inLanguage":"en","wordCount":1979,"datePublished":"2022-01-03T00:00:00","dateModified":"2022-01-03T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, event"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2022-01-03-k8s-event-handling\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2022-01-03-k8s-event-handling\/","name":"Kubernetes with java handling events"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"Kubernetes with Java - Handling Events","description":"This post is a continuation of Kubernetes with Java - Asynchronous APIs which showed us how to interact with the Kubernetes API to list deployment resources on demand. In this post, we will learn how to handle Kubernetes API events in near real-time.\nAn example use case for this capability might be to send a notification to a slack channel whenever an app deployment is started or when it finishes and becomes ready to be consumed.","inLanguage":"en","wordCount":1979,"datePublished":"2022-01-03T00:00:00","dateModified":"2022-01-03T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["java, kubernetes, spring-boot, events"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2022-01-03-k8s-event-handling\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
 <meta property="og:title" content="Kubernetes with Java - Handling Events">
-<meta property="og:description" content="Handling Kubernetes events in Java">
+<meta property="og:description" content="Handling Kubernetes API events in Java">
 <meta property="og:url" content="https://fnjoin.com/post/2022-01-03-k8s-event-handling/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="fn:join">
 <meta name=twitter:title content="Kubernetes with Java - Handling Events">
-<meta name=twitter:description content="Handling Kubernetes events in Java">
+<meta name=twitter:description content="Handling Kubernetes API events in Java">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@fnjoin">
 <meta name=twitter:creator content="@fnjoin">
@@ -97,7 +97,7 @@
 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <div class=post-heading>
 <h1>Kubernetes with Java - Handling Events</h1>
-<h2 class=post-subheading>Handling Kubernetes events in Java</h2>
+<h2 class=post-subheading>Handling Kubernetes API events in Java</h2>
 <span class=post-meta>
 <i class="fas fa-calendar"></i>&nbsp;Posted on January 3, 2022
 &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
@@ -387,7 +387,7 @@ echo-app   2/2     <span class=m>2</span>            <span class=m>2</span>     
 <a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
 <a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
 <a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/event/>event</a>&nbsp;
+<a href=https://fnjoin.com//tags/events/>events</a>&nbsp;
 </div>
 <hr>
 <section id=social-share>
