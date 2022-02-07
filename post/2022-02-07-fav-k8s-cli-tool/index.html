@@ -1,0 +1,268 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>k9s - My Favorite Kubernetes Tool - fn:join</title>
+<meta name=description content="Kubernetes CLI To Manage Your Clusters In Style">
+<meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2022-02-07-fav-k8s-cli-tool\/","name":"K9s my favorite kubernetes tool"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"k9s - My Favorite Kubernetes Tool","description":"If you work with Kubernetes clusters a lot, you are most probably used to typing a lot of kubectl commands. A while ago, I discovered k9s and it made working with Kubernetes clusters so much simpler. To quote the description directly from the k9s site:\n K9s is a terminal based UI to interact with your Kubernetes clusters\n Installing k9s is written in go-lang. The beauty of programs written in that language is that they are compiled down to a single binary with all the dependencies included.","inLanguage":"en","wordCount":528,"datePublished":"2022-02-07T00:00:00","dateModified":"2022-02-07T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["kubernetes, cli, tools"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2022-02-07-fav-k8s-cli-tool\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<meta property="og:title" content="k9s - My Favorite Kubernetes Tool">
+<meta property="og:description" content="Kubernetes CLI To Manage Your Clusters In Style">
+<meta property="og:url" content="https://fnjoin.com/post/2022-02-07-fav-k8s-cli-tool/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fn:join">
+<meta name=twitter:title content="k9s - My Favorite Kubernetes Tool">
+<meta name=twitter:description content="Kubernetes CLI To Manage Your Clusters In Style">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@fnjoin">
+<meta name=twitter:creator content="@fnjoin">
+<link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon>
+<meta name=generator content="Hugo 0.89.4">
+<link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous>
+<link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous>
+<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+<link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+<div class=container-fluid>
+<div class=navbar-header>
+<button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=https://fnjoin.com/>fn:join</a>
+</div>
+<div class="collapse navbar-collapse" id=main-navbar>
+<ul class="nav navbar-nav navbar-right">
+<li>
+<a title=Blog href=/>Blog</a>
+</li>
+<li>
+<a title=About href=/page/about/>About</a>
+</li>
+<li>
+<a title=Tags href=/tags>Tags</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header class=header-section>
+<div class="intro-header no-img">
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=post-heading>
+<h1>k9s - My Favorite Kubernetes Tool</h1>
+<h2 class=post-subheading>Kubernetes CLI To Manage Your Clusters In Style</h2>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on February 7, 2022
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;3&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class=container role=main>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<article role=main class=blog-post>
+<p>If you work with Kubernetes clusters a lot, you are most probably used to typing a lot of <code>kubectl</code> commands. A while ago, I discovered <a href=https://k9scli.io/>k9s</a> and it made working with Kubernetes clusters so much simpler. To quote the description directly from the <em>k9s</em> site:</p>
+<blockquote>
+<p>K9s is a terminal based UI to interact with your Kubernetes clusters</p>
+</blockquote>
+<h2 id=installing>Installing</h2>
+<p><em>k9s</em> is written in <em>go-lang</em>. The beauty of programs written in that language is that they are compiled down to a single binary with all the dependencies included. The project&rsquo;s <a href=https://github.com/derailed/k9s/releases>GitHub site</a> makes pre-compiled binaries available for all major OS&rsquo;s and CPU architectures. Just download the appropriate one and place the single executable binary in your <code>PATH</code>.</p>
+<p>For MacOS, if you have <a href=https://brew.sh/>Homebrew</a> installed (you should!), simply running <code>brew install k9s</code> will install it.</p>
+<h2 id=running>Running</h2>
+<p>Running it as simple as typing <code>k9s</code>. Once that command is run, you are presented with an interface in the shell where the command was issued. It looks like:</p>
+<link rel=stylesheet href=https://fnjoin.com/css/hugo-easy-gallery.css>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/img/fav-k8s-cli-tool/k9s-pods.png alt="k9s UI">
+</div>
+<a href=/img/fav-k8s-cli-tool/k9s-pods.png itemprop=contentUrl></a>
+</figure>
+</div>
+<p>The app uses the same mechanism as <code>kubectl</code> to connect to the Kubernetes clusters. So if you can connect to your cluster with <code>kubectl</code> commands, <em>k9s</em> will connect as well.</p>
+<h2 id=navigating-around>Navigating around</h2>
+<p>Once in the interface, you use the <code>UP</code> and <code>DOWN</code> keys to navigate lists, <code>ENTER</code> key to see details of the current object, <code>ESC</code> key to get back to the previous list, and other simple keyboard shortcut keys to do various operations. Most of these operations usually require lengthy <code>kubectl</code> commands if done outside of <em>k9s</em>. For example, when viewing a list of pods in <em>k9s</em>, if you press the <code>L</code> key, you get to see the logs for the first container in the pod. Then pressing <code>ECS</code> gets you back to the list of pods.</p>
+<p>In <em>k9s</em>, you can view all kinds of Kubernetes resources. By default, you are shown <em>Pod</em>s in the <code>default</code> namespace. Its like running <code>kubectly get pods -w</code> - the list will update itself as <em>Pod</em>s are added, removed, or become ready. To see <em>Deployment</em> resources, simply type <code>:deployments</code> - now you are looking at list of the <em>Deployment</em>s. You have probably already figured out the pattern. <code>:services</code> for list of <em>Service</em> resources, <code>:namespaces</code> for list of <em>Namespace</em>s, <code>:serviceaccounts</code> for <em>ServiceAccount</em>s list, so on and so forth.</p>
+<p>You don&rsquo;t have to memorize any of the keyboard commands once in <em>k9s</em>. The top portion of the interface tells you about the available commands in a context-sensitive manner. Once you do have them memorized, you can turn off the top portion and reclaim that screen real-estate. The <code>?</code> key will give you full list of commands.</p>
+<h2 id=conclusion>Conclusion</h2>
+<p>I stole the sub-title of this post from the k9s site. It says:</p>
+<blockquote>
+<p>Kubernetes CLI To Manage Your Clusters In Style</p>
+</blockquote>
+<p>And its so true. You feel like a <code>l33t h4x0r</code> when you are flying around in the <em>k9s</em> interface listing the <em>Pod</em>s, creating <em>port-forward</em>s, or checking on the status of your <em>CronJob</em> invocations. With a small set of commands, you can become very productive in a short amount of time.</p>
+<p>What are your favorite tools when dealing with Kubernetes? Please reach out if you’d like to hear more about this or other topics.</p>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
+<a href=https://fnjoin.com//tags/cli/>cli</a>&nbsp;
+<a href=https://fnjoin.com//tags/tools/>tools</a>&nbsp;
+</div>
+<hr>
+<section id=social-share>
+<div class="list-inline footer-links">
+<div class=share-box aria-hidden=true>
+<ul class=share>
+<li>
+<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-02-07-fav-k8s-cli-tool%2f&text=k9s%20-%20My%20Favorite%20Kubernetes%20Tool&via=fnjoin" target=_blank title="Share on Twitter">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+<li>
+<a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2ffnjoin.com%2fpost%2f2022-02-07-fav-k8s-cli-tool%2f" target=_blank title="Share on Facebook">
+<i class="fab fa-facebook"></i>
+</a>
+</li>
+<li>
+<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-02-07-fav-k8s-cli-tool%2f&title=k9s%20-%20My%20Favorite%20Kubernetes%20Tool" target=_blank title="Share on Reddit">
+<i class="fab fa-reddit"></i>
+</a>
+</li>
+<li>
+<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-02-07-fav-k8s-cli-tool%2f&title=k9s%20-%20My%20Favorite%20Kubernetes%20Tool" target=_blank title="Share on LinkedIn">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+<li>
+<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-02-07-fav-k8s-cli-tool%2f&title=k9s%20-%20My%20Favorite%20Kubernetes%20Tool" target=_blank title="Share on StumbleUpon">
+<i class="fab fa-stumbleupon"></i>
+</a>
+</li>
+<li>
+<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-02-07-fav-k8s-cli-tool%2f&description=k9s%20-%20My%20Favorite%20Kubernetes%20Tool" target=_blank title="Share on Pinterest">
+<i class="fab fa-pinterest"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<h4 class=see-also>See also</h4>
+<ul>
+<li><a href=/post/2022-01-03-k8s-event-handling/>Kubernetes with Java - Handling Events</a></li>
+<li><a href=/post/2021-11-28-creating-images/>Kubernetes with Java - Creating Images</a></li>
+<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - Running in the Cluster</a></li>
+<li><a href=/post/2021-09-08-show-deployments-async/>Kubernetes with Java - Asynchronous APIs</a></li>
+<li><a href=/post/2021-08-27-show-deployments/>Kubernetes with Java - Introduction</a></li>
+</ul>
+</article>
+<ul class="pager blog-pager">
+<li class=previous>
+<a href=https://fnjoin.com/post/2022-01-03-k8s-event-handling/ data-toggle=tooltip data-placement=top title="Kubernetes with Java - Handling Events">&larr; Previous Post</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<footer>
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<ul class="list-inline text-center footer-links">
+<li>
+<a href=mailto:contact@fnjoin.com title="Email us">
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://github.com/fnjoin title=GitHub>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://twitter.com/fnjoin title=Twitter>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href title=RSS>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="credits copyright text-muted">
+<a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://fnjoin.com/>fn:join</a>
+</p>
+<p class="credits theme-by text-muted">
+Views and opinions expressed by the authors are solely their own and are not the views of their employers.
+</p>
+</div>
+</div>
+</div>
+</footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://fnjoin.com/js/main.js></script>
+<script src=https://fnjoin.com/js/highlight.min.js></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script>
+</body>
+</html>
