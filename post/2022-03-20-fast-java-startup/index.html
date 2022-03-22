@@ -1,0 +1,327 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>10x Faster Spring Boot Startup Times - fn:join</title>
+<meta name=description content="Spring Native Startup Performance">
+<meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2022-03-20-fast-java-startup\/","name":"10x faster spring boot startup times"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Salman Malik"},"headline":"10x Faster Spring Boot Startup Times","description":"Application based on spring-boot are not known for extremely fast startup times and low memory usage. Most of the time spring-boot apps are meant for long running server processes and we have learned to live with the startup time and higher memory usage because spring-boot solves so many other problems for the developer and speeds up the development process. In other words, we are OK with more developer productivity at the cost of higher resource usage at runtime specially at application startup.","inLanguage":"en","wordCount":1383,"datePublished":"2022-03-20T00:00:00","dateModified":"2022-03-20T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["kubernetes, native, java, buildpacks, performance, spring-boot"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2022-03-20-fast-java-startup\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<meta property="og:title" content="10x Faster Spring Boot Startup Times">
+<meta property="og:description" content="Spring Native Startup Performance">
+<meta property="og:url" content="https://fnjoin.com/post/2022-03-20-fast-java-startup/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="fn:join">
+<meta name=twitter:title content="10x Faster Spring Boot Startup Times">
+<meta name=twitter:description content="Spring Native Startup Performance">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@fnjoin">
+<meta name=twitter:creator content="@fnjoin">
+<link href=https://fnjoin.com/img/favicon.ico rel=icon type=image/x-icon>
+<meta name=generator content="Hugo 0.89.4">
+<link rel=alternate href=https://fnjoin.com/index.xml type=application/rss+xml title=fn:join><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css integrity=sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y crossorigin=anonymous>
+<link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous>
+<link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://fnjoin.com/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+<link rel=stylesheet href=https://fnjoin.com/css/highlight.min.css><link rel=stylesheet href=https://fnjoin.com/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPSKLMVM2V"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-ZPSKLMVM2V')</script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+<div class=container-fluid>
+<div class=navbar-header>
+<button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=https://fnjoin.com/>fn:join</a>
+</div>
+<div class="collapse navbar-collapse" id=main-navbar>
+<ul class="nav navbar-nav navbar-right">
+<li>
+<a title=Blog href=/>Blog</a>
+</li>
+<li>
+<a title=About href=/page/about/>About</a>
+</li>
+<li>
+<a title=Tags href=/tags>Tags</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header class=header-section>
+<div class="intro-header no-img">
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class=post-heading>
+<h1>10x Faster Spring Boot Startup Times</h1>
+<h2 class=post-subheading>Spring Native Startup Performance</h2>
+<span class=post-meta>
+<i class="fas fa-calendar"></i>&nbsp;Posted on March 20, 2022
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;7&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class=container role=main>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<article role=main class=blog-post>
+<p>Application based on spring-boot are not known for extremely fast startup times and low memory usage. Most of the time spring-boot apps are meant for long running server processes and we have learned to live with the startup time and higher memory usage because spring-boot solves so many other problems for the developer and speeds up the development process. In other words, we are OK with more developer productivity at the cost of higher resource usage at runtime specially at application startup.</p>
+<h2 id=introducing-spring-native>Introducing spring-native</h2>
+<p>This situation is about to change for the better with upcoming spring-boot <code>3.0</code> release and the <a href=https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/>spring-native project</a>. With the <code>3.0</code> release, spring-boot will optionally support compiling our spring-boot apps to native executables. Because of spring-boot, we have the convenience of not having to worry about installing and maintaining server run-times like Tomcat and Jetty separately from our apps. This is because spring-boot apps, their dependencies, alongside the server runtimes are bundled together - in a single self-executable JAR. Now that self-executable is not really executable without a JRE being present on the system. With spring-boot <code>3.0</code> and specifically the spring-native project, the JRE can be included in the built artifact and it will truly be self executable - no JRE required on the system at runtime.</p>
+<p>The current version of spring-native is <code>0.11.3</code> and starting with spring-boot <code>2.6.4</code>, you can already try out this experimental capability. Your project must be using either JDK 11 or 17. The easiest way to try out this capability is to rely on the spring-boot Gradle or Maven plugin&rsquo;s capability of using buildpacks to convert your app into an OCI image. With a slight modification in the build configuration, the generated OCI image will include a native built executable without having to bundle a JRE in the image.</p>
+<p>This generally results in an OCI image that is smaller, starts up to 10x faster and uses roughly 1/5 the memory at startup - compared to non-native version. This does come at a price during the compilation phase where it takes much longer than a standard Java build. The native compilation is composed of the following 7 different stages:</p>
+<ol>
+<li>Initializing</li>
+<li>Performing analysis</li>
+<li>Building universe</li>
+<li>Parsing methods</li>
+<li>Inlining methods</li>
+<li>Compiling methods</li>
+<li>Creating image</li>
+</ol>
+<p>The details of what actually happens during these 7 stages will be left for a future post. In the meantime, head over to the <a href=https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/>spring-native project</a> to read more about this process.</p>
+<h2 id=creating-native-executables>Creating native executables</h2>
+<p>We talked about the steps to create an OCI image for a spring-boot app in an earlier post - see <a href=../2021-11-28-creating-images>Kubernetes with Java - Creating Images</a>. Here we will use Gradle and setup our <code>build.gradle</code> file to configure the spring-boot plugin such that it produces a native executable in the OCI image. For a complete working example <code>build.gradle</code>, see <a href=https://github.com/maliksalman/spring-native-samples/blob/main/simple-jpa-gradle/build.gradle>here</a>.</p>
+<p>First we need to configure the plugins. Along with the standard spring-boot related plugins, we need to configure the spring-native' AOT plugin. The most recent version of spring-native project is <code>0.11.3</code> at this time:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=n>plugins</span> <span class=o>{</span>
+	<span class=n>id</span> <span class=s1>&#39;org.springframework.boot&#39;</span> <span class=n>version</span> <span class=s1>&#39;2.6.4&#39;</span>
+	<span class=n>id</span> <span class=s1>&#39;io.spring.dependency-management&#39;</span> <span class=n>version</span> <span class=s1>&#39;1.0.11.RELEASE&#39;</span>
+	<span class=n>id</span> <span class=s1>&#39;java&#39;</span>
+	<span class=n>id</span> <span class=s1>&#39;org.springframework.experimental.aot&#39;</span> <span class=n>version</span> <span class=s1>&#39;0.11.3&#39;</span>
+<span class=o>}</span>
+</code></pre></div><p>Next, we need to make sure we can pull our dependencies from Spring&rsquo;s own Maven repository in addition to Maven Central like so:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=n>repositories</span> <span class=o>{</span>
+	<span class=n>maven</span> <span class=o>{</span> <span class=n>url</span> <span class=s1>&#39;https://repo.spring.io/release&#39;</span> <span class=o>}</span>
+	<span class=n>mavenCentral</span><span class=o>()</span>
+<span class=o>}</span>
+</code></pre></div><p>We also need to tell the spring-boot plugin to create the native version of the OCI image:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=n>tasks</span><span class=o>.</span><span class=na>named</span><span class=o>(</span><span class=s1>&#39;bootBuildImage&#39;</span><span class=o>)</span> <span class=o>{</span>
+	<span class=n>builder</span> <span class=o>=</span> <span class=s1>&#39;paketobuildpacks/builder:tiny&#39;</span>
+	<span class=n>environment</span> <span class=o>=</span> <span class=o>[</span><span class=s1>&#39;BP_NATIVE_IMAGE&#39;</span><span class=o>:</span> <span class=s1>&#39;true&#39;</span><span class=o>]</span>
+<span class=o>}</span>
+</code></pre></div><p>As far as Spring&rsquo;s own libraries, the spring-native project already knows how to compile them to native code. But third party libraries might need a bit more attention. For example, here are the dependencies of a typical spring-boot project that uses spring-web MVC, spring-data JPA, actuators, MySQL connector, Prometheus Micrometer Registry, Lombok, and Open API Swagger UI:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=n>dependencies</span> <span class=o>{</span>
+	<span class=n>implementation</span> <span class=s1>&#39;org.springframework.boot:spring-boot-starter-web&#39;</span>
+	<span class=n>implementation</span> <span class=s1>&#39;org.springframework.boot:spring-boot-starter-data-jpa&#39;</span>
+	<span class=n>implementation</span> <span class=s1>&#39;org.springframework.boot:spring-boot-starter-actuator&#39;</span>
+	<span class=n>runtimeOnly</span> <span class=s1>&#39;mysql:mysql-connector-java&#39;</span>
+
+	<span class=n>implementation</span> <span class=s1>&#39;io.micrometer:micrometer-registry-prometheus&#39;</span>
+
+	<span class=n>implementation</span> <span class=s1>&#39;org.springdoc:springdoc-openapi-ui:1.6.4&#39;</span>
+	<span class=n>implementation</span> <span class=s1>&#39;org.springdoc:springdoc-openapi-native:1.6.4&#39;</span>
+
+	<span class=n>compileOnly</span> <span class=s1>&#39;org.projectlombok:lombok&#39;</span>
+	<span class=n>annotationProcessor</span> <span class=s1>&#39;org.projectlombok:lombok&#39;</span>
+
+	<span class=n>testImplementation</span> <span class=s1>&#39;org.springframework.boot:spring-boot-starter-test&#39;</span>
+<span class=o>}</span>
+</code></pre></div><p>As you can see we only needed to add a special <code>springdoc-openapi-native</code> dependency for native compilation to work properly. All other dependencies were just the normal versions that you would have included in a non-native compilation situation. Just to be clear, that native dependency doesn&rsquo;t actually include native compiled bits in the dependency. Instead it includes Java and configuration code to tell spring how to natively compile the <code>springdoc-openapi</code> code. Once native compilation becomes more common, you will probably not have to explicitly add native related dependencies like above.</p>
+<p>To create the native executable images we just need to invoke <code>bootBuildImage</code> Gradle target like so:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>./gradlew clean bootBuildImage
+</code></pre></div><h2 id=results>Results</h2>
+<p>The OCI image building with native executable does take longer compared to one with standard compiled Java byte-code and a bundled JRE. During testing, the non-native OCI image generation took around 25 seconds on average while the native OCI image generation took 312 seconds on average (a bit over 5 minutes). The native compilation is slow and will probably be slower compared to non-native compilation for the foreseeable future. As spring-native and native compilation features of JDK improve, the time it takes to perform the native compilation will come down over time as it already has over the last year.</p>
+<p>Looking at the output from a native OCI image generation, we can see that majority of the time was spent performing the native compilation. The rest of it was spent assembling the OCI image. The time spent for the entirety of OCI image creation can be visualized with the following chart.</p>
+<link rel=stylesheet href=https://fnjoin.com/css/hugo-easy-gallery.css>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/img/native-compile-breakdown.jpg alt="OCI Image with native executable breakdown">
+</div>
+<a href=/img/native-compile-breakdown.jpg itemprop=contentUrl></a>
+</figure>
+</div>
+<p>To see the difference in performance between standard Java compiled and native compiled code, the app was started multiple times, capturing startup times and memory usage on startup. The native version of the app started up in 0.226 seconds on average while using around 69 MB of memory. The non-native version of the app started up in 7.805 seconds on average while using 404 MB of memory.</p>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/img/native-vs-standard.jpg alt="Native vs Standard">
+</div>
+<a href=/img/native-vs-standard.jpg itemprop=contentUrl></a>
+</figure>
+</div>
+<h2 id=running-environment>Running environment</h2>
+<p>A bit about our compilation and running environment. The above statistics were generated on a 2019 MacBook Pro 16 with 6 core i7 and 32GB of memory. In addition, the laptop was latest version of macOS (Monterey - 12.2.1) and Docker Desktop (4.6.0). When the same tests ware run on an M1 MacBook Air (with 8GB of memory) and it was about twice as slow to do the native compile. This was because the native compile capabilities have not been optimized for an M1 chip yet and probably because the native compile is memory intensive and 8GB might not have been enough. This situation on M1 based system will probably be a lot better on higher-end M1 CPUs with more memory.</p>
+<p>With the increasing usage of ARM based CPUs on the server side and now for personal computers (Apple M1), it is important to note that the compiled native executables are specific to an OS and CPU platform. Since the OS bits being bundled in the OCI image are responsibility of buildpacks, we only have to make sure to perform the native compile on the same CPU platform where we intend to run it. So if the target runtime is x86 then native compile the image on x86.</p>
+<h2 id=conclusion>Conclusion</h2>
+<p>The capability to compile Java programs to native executables is a very exciting development for the Java platform. In most situations the increased compile/build times will be worth the significantly reduced resource usage at startup and runtime. With wider adoption of this technology, Java and specifically spring-boot apps will start to use the cloud infrastructure a lot more efficiently than they did in the past. Using spring-boot apps for server-less workloads seems like a real possibility as well.</p>
+<p>What have you done to make you Java and specially spring-boot applications startup faster in Kubernetes? Please reach out if you’d like to hear more about this or other topics.</p>
+<h2 id=references>References</h2>
+<ul>
+<li>If you want to try out working examples, please checkout the <a href=https://github.com/maliksalman/spring-native-samples>spring-native-samples repository</a> - it includes both Gradle and Maven examples. Both example applications have the exact same functionality and dependencies with the only difference being the build system. The README for the project also will let you know how to compile and run the samples.</li>
+<li>If you want to know how to run an app like this inside a Kubernetes cluster, see <a href=../2021-09-11-running-in-cluster>Kubernetes with Java - Running in the Cluster</a></li>
+</ul>
+<div class=blog-tags>
+<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
+<a href=https://fnjoin.com//tags/native/>native</a>&nbsp;
+<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
+<a href=https://fnjoin.com//tags/buildpacks/>buildpacks</a>&nbsp;
+<a href=https://fnjoin.com//tags/performance/>performance</a>&nbsp;
+<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
+</div>
+<hr>
+<section id=social-share>
+<div class="list-inline footer-links">
+<div class=share-box aria-hidden=true>
+<ul class=share>
+<li>
+<a href="//twitter.com/share?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-03-20-fast-java-startup%2f&text=10x%20Faster%20Spring%20Boot%20Startup%20Times&via=fnjoin" target=_blank title="Share on Twitter">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+<li>
+<a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2ffnjoin.com%2fpost%2f2022-03-20-fast-java-startup%2f" target=_blank title="Share on Facebook">
+<i class="fab fa-facebook"></i>
+</a>
+</li>
+<li>
+<a href="//reddit.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-03-20-fast-java-startup%2f&title=10x%20Faster%20Spring%20Boot%20Startup%20Times" target=_blank title="Share on Reddit">
+<i class="fab fa-reddit"></i>
+</a>
+</li>
+<li>
+<a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-03-20-fast-java-startup%2f&title=10x%20Faster%20Spring%20Boot%20Startup%20Times" target=_blank title="Share on LinkedIn">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+<li>
+<a href="//www.stumbleupon.com/submit?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-03-20-fast-java-startup%2f&title=10x%20Faster%20Spring%20Boot%20Startup%20Times" target=_blank title="Share on StumbleUpon">
+<i class="fab fa-stumbleupon"></i>
+</a>
+</li>
+<li>
+<a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2ffnjoin.com%2fpost%2f2022-03-20-fast-java-startup%2f&description=10x%20Faster%20Spring%20Boot%20Startup%20Times" target=_blank title="Share on Pinterest">
+<i class="fab fa-pinterest"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<h4 class=see-also>See also</h4>
+<ul>
+<li><a href=/post/2022-02-07-fav-k8s-cli-tool/>k9s - My Favorite Kubernetes Tool</a></li>
+<li><a href=/post/2022-01-03-k8s-event-handling/>Kubernetes with Java - Handling Events</a></li>
+<li><a href=/post/2021-11-28-creating-images/>Kubernetes with Java - Creating Images</a></li>
+<li><a href=/post/2021-09-11-running-in-cluster/>Kubernetes with Java - Running in the Cluster</a></li>
+<li><a href=/post/2021-09-08-show-deployments-async/>Kubernetes with Java - Asynchronous APIs</a></li>
+</ul>
+</article>
+<ul class="pager blog-pager">
+<li class=previous>
+<a href=https://fnjoin.com/post/2022-02-07-fav-k8s-cli-tool/ data-toggle=tooltip data-placement=top title="k9s - My Favorite Kubernetes Tool">&larr; Previous Post</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<footer>
+<div class=container>
+<div class=row>
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<ul class="list-inline text-center footer-links">
+<li>
+<a href=mailto:contact@fnjoin.com title="Email us">
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://github.com/fnjoin title=GitHub>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href=https://twitter.com/fnjoin title=Twitter>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+<li>
+<a href title=RSS>
+<span class="fa-stack fa-lg">
+<i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+</span>
+</a>
+</li>
+</ul>
+<p class="credits copyright text-muted">
+<a href=https://fnjoin.com>Salman Malik, Archie Cowan</a>
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://fnjoin.com/>fn:join</a>
+</p>
+<p class="credits theme-by text-muted">
+Views and opinions expressed by the authors are solely their own and are not the views of their employers.
+</p>
+</div>
+</div>
+</div>
+</footer><script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js integrity=sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js integrity=sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-1.12.4.min.js integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://fnjoin.com/js/main.js></script>
+<script src=https://fnjoin.com/js/highlight.min.js></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<script>$(document).ready(function(){$("pre.chroma").css("padding","0")})</script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://fnjoin.com/js/load-photoswipe.js></script>
+</body>
+</html>
