@@ -3,13 +3,13 @@
 <meta charset=utf-8>
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>spring-boot - fn:join</title>
+<title>api-events - fn:join</title>
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<meta property="og:title" content="spring-boot">
-<meta property="og:url" content="https://fnjoin.com/tags/spring-boot/">
+<meta property="og:title" content="api-events">
+<meta property="og:url" content="https://fnjoin.com/tags/api-events/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="fn:join">
-<meta name=twitter:title content="spring-boot">
+<meta name=twitter:title content="api-events">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@fnjoin">
 <meta name=twitter:creator content="@fnjoin">
@@ -92,7 +92,7 @@
 <div class=row>
 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <div class=tags-heading>
-<h1>spring-boot</h1>
+<h1>api-events</h1>
 <hr class=small>
 </div>
 </div>
@@ -132,135 +132,6 @@ What are we trying to do For this post, our goal is to make it easier to create 
 <a href=https://fnjoin.com//tags/mysql/>mysql</a>&nbsp;
 </div>
 </article>
-<article class=post-preview>
-<a href=https://fnjoin.com/post/2022-03-20-fast-java-startup/>
-<h2 class=post-title>10x Faster Spring Boot Startup Times</h2>
-<h3 class=post-subtitle>
-Spring Native Startup Performance
-</h3>
-</a>
-<p class=post-meta>
-<span class=post-meta>
-<i class="fas fa-calendar"></i>&nbsp;Posted on March 20, 2022
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;7&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
-</span>
-</p>
-<div class=post-entry>
-Applications based on spring-boot are not known for extremely fast startup times and low memory usage. Usually spring-boot application are meant for long running backend processes and we have learned to live with the startup time and higher memory usage. This is because leveraging spring-boot solves so many other problems for the developer and speeds up the overall development process. In other words, we are OK with more developer productivity at the cost of higher resource usage at runtime specially at application startup.
-<a href=https://fnjoin.com/post/2022-03-20-fast-java-startup/ class=post-read-more>[Read More]</a>
-</div>
-<div class=blog-tags>
-<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/native/>native</a>&nbsp;
-<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
-<a href=https://fnjoin.com//tags/buildpacks/>buildpacks</a>&nbsp;
-<a href=https://fnjoin.com//tags/performance/>performance</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-</div>
-</article>
-<article class=post-preview>
-<a href=https://fnjoin.com/post/2022-01-03-k8s-event-handling/>
-<h2 class=post-title>Kubernetes with Java - Handling Events</h2>
-<h3 class=post-subtitle>
-Handling Kubernetes API events in Java
-</h3>
-</a>
-<p class=post-meta>
-<span class=post-meta>
-<i class="fas fa-calendar"></i>&nbsp;Posted on January 3, 2022
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
-</span>
-</p>
-<div class=post-entry>
-This post is a continuation of Kubernetes with Java - Asynchronous APIs which showed us how to interact with the Kubernetes API to list deployment resources on demand. In this post, we will learn how to handle Kubernetes API events in near real-time.
-An example use case for this capability might be to send a notification to a slack channel whenever an app deployment is started or when it finishes and becomes ready to be consumed.
-<a href=https://fnjoin.com/post/2022-01-03-k8s-event-handling/ class=post-read-more>[Read More]</a>
-</div>
-<div class=blog-tags>
-<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
-<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/events/>events</a>&nbsp;
-</div>
-</article>
-<article class=post-preview>
-<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/>
-<h2 class=post-title>Kubernetes with Java - Running in the Cluster</h2>
-<h3 class=post-subtitle>
-Using Kubernetes API through a Java app from inside the Kubernetes cluster with RBAC
-</h3>
-</a>
-<p class=post-meta>
-<span class=post-meta>
-<i class="fas fa-calendar"></i>&nbsp;Posted on September 11, 2021
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
-</span>
-</p>
-<div class=post-entry>
-What are we going to do? This post builds on top of Kubernetes with Java - Introduction and Kubernetes with Java - Asynchronous APIs posts which showed us how to interact with the Kubernetes API to list deployment resources and provide an API of our own to list teams and apps belonging to those teams running in the cluster. In this post, we will
-Configure a spring-boot app to be able to access the Kubernetes API when running inside a Kubernetes cluster Learn how to package up a spring-boot app into an OCI image (aka Docker image) Configure RBAC with Role, RoleBinding, and ServiceAccount so our spring-boot app has the ability to run with only the Kubernetes APIs that we think it should have access to and nothing more Create Deployment and Service resources to deploy our spring-boot app and expose its API within the cluster Prerequisites Access to source code for the project - https://github.
-<a href=https://fnjoin.com/post/2021-09-11-running-in-cluster/ class=post-read-more>[Read More]</a>
-</div>
-<div class=blog-tags>
-<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
-<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/rbac/>rbac</a>&nbsp;
-</div>
-</article>
-<article class=post-preview>
-<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/>
-<h2 class=post-title>Kubernetes with Java - Asynchronous APIs</h2>
-<h3 class=post-subtitle>
-Choosing between synchronous and asynchronous Kubernetes API in Java
-</h3>
-</a>
-<p class=post-meta>
-<span class=post-meta>
-<i class="fas fa-calendar"></i>&nbsp;Posted on September 8, 2021
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;5&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
-</span>
-</p>
-<div class=post-entry>
-What are we going to do? This post builds on top of Kubernetes with Java - Introduction which relied on synchronous Kubernetes API to get information for apps runnings in Kubernetes cluster. In this post, we will
-Learn when to use synchronous and when to use asynchronous Kubernetes API mechanisms Learn how to use asynchronous Kubernetes API to exrtact deployments metadata How to use spring-boot profiles to conditionally enable functionality Synchronous vs asynchronous APIs Kubernetes API provides two mechanisms to consume information for the clients.
-<a href=https://fnjoin.com/post/2021-09-08-show-deployments-async/ class=post-read-more>[Read More]</a>
-</div>
-<div class=blog-tags>
-<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
-<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-<a href=https://fnjoin.com//tags/asynchronous/>asynchronous</a>&nbsp;
-</div>
-</article>
-<article class=post-preview>
-<a href=https://fnjoin.com/post/2021-08-27-show-deployments/>
-<h2 class=post-title>Kubernetes with Java - Introduction</h2>
-<h3 class=post-subtitle>
-Getting started with the Kubernetes API client libraries for Java
-</h3>
-</a>
-<p class=post-meta>
-<span class=post-meta>
-<i class="fas fa-calendar"></i>&nbsp;Posted on August 27, 2021
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;9&nbsp;minutes
-&nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Salman Malik
-</span>
-</p>
-<div class=post-entry>
-What are we going to do? Learn how to initialize the k8s api client in a java spring-boot application Extract metadata from deployments in a namespace and transform that metadata into new views Prepare you for more sophisticated problem solving using the k8s API in future articles Motivation You have a few dozen different applications (as Kubernetes deployment resources) running in your cluster All of those applications use labels to designate the name of the team that manages that application, and the application name You want to provide APIs that: Lists all teams that have applications running in the cluster Lists all apps that belong to a team Scenario Assumption: you have minikube locally and you don&rsquo;t already have a namespace called dev.
-<a href=https://fnjoin.com/post/2021-08-27-show-deployments/ class=post-read-more>[Read More]</a>
-</div>
-<div class=blog-tags>
-<a href=https://fnjoin.com//tags/java/>java</a>&nbsp;
-<a href=https://fnjoin.com//tags/kubernetes/>kubernetes</a>&nbsp;
-<a href=https://fnjoin.com//tags/spring-boot/>spring-boot</a>&nbsp;
-</div>
-</article>
 </div>
 </div>
 </div>
@@ -295,7 +166,7 @@ What are we going to do? Learn how to initialize the k8s api client in a java sp
 </a>
 </li>
 <li>
-<a href=/tags/spring-boot/index.xml title=RSS>
+<a href=/tags/api-events/index.xml title=RSS>
 <span class="fa-stack fa-lg">
 <i class="fas fa-circle fa-stack-2x"></i>
 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
