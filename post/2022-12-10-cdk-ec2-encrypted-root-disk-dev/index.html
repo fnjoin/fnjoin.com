@@ -6,7 +6,7 @@
 <title>CDK Template to Launch an EC2 Instance with an Encrypted Root Volume - fn:join</title>
 <meta name=description content="Using CDK, EC2, an Encrypted Root Volume, VPC, and the VS Code Remote SSH plugin">
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2022-12-10-cdk-ec2-encrypted-root-disk-dev\/","name":"Cdk template to launch an ec2 instance with an encrypted root volume"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"CDK Template to Launch an EC2 Instance with an Encrypted Root Volume","description":"A teammate recently drew my attention to the benefits of Remote Development using SSH, a plugin for VS Code. It provides a local experience for developing remotely. I usually dismiss this sort of tool as I\u0026rsquo;ve been doing remote development with terminals and SSH and my favorite editor for a long time. However, the combination of a full IDE experienece along with the decent terminal experience available in VS Code motivated me to at least give it a try.","inLanguage":"en","wordCount":1887,"datePublished":"2022-12-10T00:00:00","dateModified":"2022-12-10T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["aws, cdk, ec2, vpc, vscode"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2022-12-10-cdk-ec2-encrypted-root-disk-dev\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2022-12-10-cdk-ec2-encrypted-root-disk-dev\/","name":"Cdk template to launch an ec2 instance with an encrypted root volume"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"CDK Template to Launch an EC2 Instance with an Encrypted Root Volume","description":"A teammate recently drew my attention to the benefits of Remote Development using SSH, a plugin for VS Code. It provides a local experience for developing remotely. I\u0026rsquo;ve done remote development with terminals and SSH and my favorite editor for a long time. However, the combination of a full IDE experienece along with the decent terminal experience available in VS Code motivated me to give it a try. In this article, we\u0026rsquo;ll create a remote development environment with AWS CDK.","inLanguage":"en","wordCount":1897,"datePublished":"2022-12-10T00:00:00","dateModified":"2022-12-10T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["aws, cdk, ec2, vpc, vscode"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2022-12-10-cdk-ec2-encrypted-root-disk-dev\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
 <meta property="og:title" content="CDK Template to Launch an EC2 Instance with an Encrypted Root Volume">
 <meta property="og:description" content="Using CDK, EC2, an Encrypted Root Volume, VPC, and the VS Code Remote SSH plugin">
 <meta property="og:url" content="https://fnjoin.com/post/2022-12-10-cdk-ec2-encrypted-root-disk-dev/">
@@ -113,8 +113,8 @@
 <div class=row>
 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <article role=main class=blog-post>
-<p>A teammate recently drew my attention to the benefits of <em><a href=https://code.visualstudio.com/docs/remote/ssh>Remote Development using SSH</a></em>, a plugin for <a href=https://code.visualstudio.com/>VS Code</a>. It provides a local experience for developing remotely. I usually dismiss this sort of tool as I&rsquo;ve been doing remote development with terminals and SSH and my <a href=https://www.vim.org/>favorite editor</a> for a long time. However, the combination of a full IDE experienece along with the decent terminal experience available in VS Code motivated me to at least give it a try.</p>
-<p>I initially gave it a shot to test the full IDE experience but probably will continue using this for awhile thanks to the automatic port forwarding feature. When you connect to your remote server with VS Code, it installs its server. This means it can detect when you open a local port and automatically forward it.</p>
+<p>A teammate recently drew my attention to the benefits of <em><a href=https://code.visualstudio.com/docs/remote/ssh>Remote Development using SSH</a></em>, a plugin for <a href=https://code.visualstudio.com/>VS Code</a>. It provides a local experience for developing remotely. I&rsquo;ve done remote development with terminals and SSH and my <a href=https://www.vim.org/>favorite editor</a> for a long time. However, the combination of a full IDE experienece along with the decent terminal experience available in VS Code motivated me to give it a try. In this article, we&rsquo;ll create a remote development environment with AWS CDK.</p>
+<p>I initially gave it a shot to test the full IDE experience but probably will continue using this for awhile thanks to the automatic port forwarding feature. When you connect to your remote server with VS Code, it installs its server. This means it can detect when you open a local port (on the remote server) and automatically forward it through your ssh connection. Neat!</p>
 <p>When developing with very dependency (i.e., package downloads) heavy environments, you can develop on a server with gobs of low-latency bandwidth instead of your local network. Likely your home or office network is more constrained that the network of, for instance, a server running in your nearest AWS EC2 Region.</p>
 <h2 id=running-an-ec2-instance-for-development>Running an EC2 Instance for Development</h2>
 <p>Now that I want to commit to using EC2 for development longer term, I thought I would make it easier to turn on and turn off what I wanted to use in AWS. This also brings us to the main feature of this article, a Cloud Development Kit (CDK) template to automate the creation and, importantly, the deletion of the resources I&rsquo;m using.</p>
@@ -125,7 +125,7 @@
 <p>I recommend using NVM or <a href=https://github.com/nvm-sh/nvm>Node Version Manager</a>. There is a quick install solution on that page. Use whatever method you like to install node though.</p>
 <h3 id=install-cdk>Install CDK</h3>
 <p>CDK installs using <code>npm</code>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>npm install -g aws-cdk
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>npm install -g aws-cdk
 </code></pre></div><p>This provides the <code>cdk</code> command.</p>
 <h3 id=check-your-aws-access>Check Your AWS Access</h3>
 <p>For the following steps, make sure you&rsquo;re ready with access to your AWS account. You can use the <a href=https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html>AWS CLI Getting Started Guide</a> to get set up quickly.</p>
@@ -134,44 +134,44 @@
 <p>⚠️ <strong>Be advised</strong>: Beyond this point, you will be charged by AWS for resources you utilize. When you turn off what you are using, you will no longer be charged. If you remember to turn it off, it will cost less than a cup of coffee.</p>
 </blockquote>
 <p>CDK requires a small number of resources in your account to deploy your stacks. These include a cloudformation stack that includes some roles and s3 buckets. If you know your AWS account number and the region you wish to run your stack, the following command will set you up:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>cdk bootstrap aws://ACCOUNT-NUMBER/REGION
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>cdk bootstrap aws://ACCOUNT-NUMBER/REGION
 </code></pre></div><p>If you don&rsquo;t have your account number handy, these next steps are inlined from the <a href=https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap>getting started guide</a>:</p>
 <blockquote>
 <h4 id=bootstrapping>Bootstrapping</h4>
 <p>Deploying stacks with the AWS CDK requires dedicated Amazon S3 buckets and other containers to be available to AWS CloudFormation during deployment. Creating these is called bootstrapping. To bootstrap, issue:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>cdk bootstrap aws://ACCOUNT-NUMBER/REGION
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>cdk bootstrap aws://ACCOUNT-NUMBER/REGION
 </code></pre></div><h4 id=tip>Tip</h4>
 <p>If you don&rsquo;t have your AWS account number handy, you can get it from the AWS Management Console. Or, if you have the AWS CLI installed, the following command displays your default account information, including the account number.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>aws sts get-caller-identity
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>aws sts get-caller-identity
 </code></pre></div><p>If you created named profiles in your local AWS configuration, you can use the &ndash;profile option to display the account information for a specific profile. The following example shows how to display account information for the prod profile.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>aws sts get-caller-identity --profile prod
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>aws sts get-caller-identity --profile prod
 </code></pre></div><p>To display the default Region, use aws configure get.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>aws configure get region
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>aws configure get region
 aws configure get region --profile prod
 </code></pre></div></blockquote>
 <p>Now you&rsquo;re ready to get started</p>
 <h2 id=starting-our-template>Starting our Template</h2>
 <p>In your projects folder, make a new directory for our template:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>mkdir ec2-dev
-cd ec2-dev
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>mkdir ec2-dev
+<span class=nb>cd</span> ec2-dev
 </code></pre></div><p>CDK assumes the name of the folder is the name of the project so start in an empty folder.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>cdk init app --language typescript
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>cdk init app --language typescript
 </code></pre></div><p>following the completion of the above you should see this:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>ec2-dev % ls
-README.md		cdk.json		lib			package-lock.json	test
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>ec2-dev % ls
+README.md		cdk.json		lib			package-lock.json	<span class=nb>test</span>
 bin			jest.config.js		node_modules		package.json		tsconfig.json
 </code></pre></div><p>In <code>bin/ec2-dev.ts</code> you will find what is essentially the main method of your program. Likely you won&rsquo;t need to change much here actually.</p>
 <p>In <code>lib/ec2-dev-stack.ts</code> you&rsquo;ll find Ec2DevStackStack.</p>
 <p>In <code>lib/ec2-dev-stack.ts</code>, you can remove the commented code so that your file resembles this:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>import * as cdk from &#39;aws-cdk-lib&#39;;
-import { Construct } from &#39;constructs&#39;;
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript><span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>cdk</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib&#39;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>Construct</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;constructs&#39;</span><span class=p>;</span>
 
-export class Ec2DevStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+<span class=kr>export</span> <span class=kr>class</span> <span class=nx>Ec2DevStack</span> <span class=kr>extends</span> <span class=nx>cdk</span><span class=p>.</span><span class=nx>Stack</span> <span class=p>{</span>
+  <span class=kr>constructor</span><span class=p>(</span><span class=nx>scope</span>: <span class=kt>Construct</span><span class=p>,</span> <span class=nx>id</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>props?</span>: <span class=kt>cdk.StackProps</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kr>super</span><span class=p>(</span><span class=nx>scope</span><span class=p>,</span> <span class=nx>id</span><span class=p>,</span> <span class=nx>props</span><span class=p>);</span>
 
-  }
-}
+  <span class=p>}</span>
+<span class=p>}</span>
 </code></pre></div><p>Now we will add each of these pieces to our new template:</p>
 <ul>
 <li>VPC</li>
@@ -180,173 +180,173 @@ export class Ec2DevStack extends cdk.Stack {
 <li>An EC2 instance with a block device</li>
 </ul>
 <p>First, let&rsquo;s start with some imports so that we have the resources we need.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>import * as cdk from &#39;aws-cdk-lib&#39;;
-import * as ec2 from &#39;aws-cdk-lib/aws-ec2&#39;;
-import * as iam from &#39;aws-cdk-lib/aws-iam&#39;;
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript><span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>cdk</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib&#39;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>ec2</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib/aws-ec2&#39;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>iam</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib/aws-iam&#39;</span><span class=p>;</span>
 
-import { Construct } from &#39;constructs&#39;;
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>Construct</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;constructs&#39;</span><span class=p>;</span>
 </code></pre></div><p>Now we can begin adding the pieces we need to complete our stack in the constructor.</p>
 <p>First, we define our VPC. This is a fairly basic starting point. The key points here is that the subnets generated are public so that we can access them from our home network.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>// ...
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript><span class=c1>// ...
+</span><span class=c1></span>
+  <span class=kr>constructor</span><span class=p>(</span><span class=nx>scope</span>: <span class=kt>Construct</span><span class=p>,</span> <span class=nx>id</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>props?</span>: <span class=kt>cdk.StackProps</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kr>super</span><span class=p>(</span><span class=nx>scope</span><span class=p>,</span> <span class=nx>id</span><span class=p>,</span> <span class=nx>props</span><span class=p>);</span>
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+    <span class=kr>const</span> <span class=nx>vpc</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>Vpc</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;dev-vpc&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>ipAddresses</span>: <span class=kt>ec2.IpAddresses.cidr</span><span class=p>(</span><span class=s1>&#39;10.0.0.0/16&#39;</span><span class=p>),</span>
+      <span class=nx>natGateways</span>: <span class=kt>0</span><span class=p>,</span>
+      <span class=nx>subnetConfiguration</span><span class=o>:</span> <span class=p>[{</span>
+        <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;public&#39;</span><span class=p>,</span>
+        <span class=nx>cidrMask</span>: <span class=kt>24</span><span class=p>,</span> 
+        <span class=nx>subnetType</span>: <span class=kt>ec2.SubnetType.PUBLIC</span><span class=p>,</span>
+      <span class=p>}]</span>
+    <span class=p>});</span>
 
-    const vpc = new ec2.Vpc(this, &#39;dev-vpc&#39;, {
-      ipAddresses: ec2.IpAddresses.cidr(&#39;10.0.0.0/16&#39;),
-      natGateways: 0,
-      subnetConfiguration: [{
-        name: &#39;public&#39;,
-        cidrMask: 24, 
-        subnetType: ec2.SubnetType.PUBLIC,
-      }]
-    });
+<span class=c1>// ... 
+</span></code></pre></div><p>Next we define our security group and some ingress rules. Note, that we only need to provide access over port 22 for SSH from our home network. You can add additional rules by making additional calls to <code>sesrverSecurityGroup.addIngressRule</code>.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript>    <span class=kr>const</span> <span class=nx>serverSecurityGroup</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>SecurityGroup</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;dev-security-group&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>vpc</span><span class=p>,</span>
+      <span class=nx>allowAllOutbound</span>: <span class=kt>true</span><span class=p>,</span>
+    <span class=p>});</span>
 
-// ... 
-</code></pre></div><p>Next we define our security group and some ingress rules. Note, that we only need to provide access over port 22 for SSH from our home network. You can add additional rules by making additional calls to <code>sesrverSecurityGroup.addIngressRule</code>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>    const serverSecurityGroup = new ec2.SecurityGroup(this, &#39;dev-security-group&#39;, {
-      vpc,
-      allowAllOutbound: true,
-    });
-
-    serverSecurityGroup.addIngressRule(
-      ec2.Peer.ipv4(&#39;1.1.1.1/32&#39;), // replace 1.1.1.1 with your ip address
-      ec2.Port.tcp(22), &#39;allow ssh access from home&#39;,
-    );
+    <span class=nx>serverSecurityGroup</span><span class=p>.</span><span class=nx>addIngressRule</span><span class=p>(</span>
+      <span class=nx>ec2</span><span class=p>.</span><span class=nx>Peer</span><span class=p>.</span><span class=nx>ipv4</span><span class=p>(</span><span class=s1>&#39;1.1.1.1/32&#39;</span><span class=p>),</span> <span class=c1>// replace 1.1.1.1 with your ip address
+</span><span class=c1></span>      <span class=nx>ec2</span><span class=p>.</span><span class=nx>Port</span><span class=p>.</span><span class=nx>tcp</span><span class=p>(</span><span class=mi>22</span><span class=p>),</span> <span class=s1>&#39;allow ssh access from home&#39;</span><span class=p>,</span>
+    <span class=p>);</span>
 </code></pre></div><p>I don&rsquo;t recommend this configuration if your home network IP address changes frequently. If this is the case, you probably want to consider <a href=https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-set-up.html>EC2 Instance Connect</a>. Possibly I can address this in a follow up article.</p>
 <p>Next we define a server role for our instance. The following example is very permissive and may not be appropriate in accounts that have shared activities. I run this in an account that is basically my personal dev environment in the cloud and does not risk access to any confidential information. Take care to understand if this meets the security standards of your environment. You can actually skip using instance roles if you want and create your EC2 instance without a role to get started.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>    const serverRole = new iam.Role(this, &#39;server-role&#39;, {
-      assumedBy: new iam.ServicePrincipal(&#39;ec2.amazonaws.com&#39;),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName(&#39;AdministratorAccess&#39;)
-      ]
-    });
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript>    <span class=kr>const</span> <span class=nx>serverRole</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>iam</span><span class=p>.</span><span class=nx>Role</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;server-role&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>assumedBy</span>: <span class=kt>new</span> <span class=nx>iam</span><span class=p>.</span><span class=nx>ServicePrincipal</span><span class=p>(</span><span class=s1>&#39;ec2.amazonaws.com&#39;</span><span class=p>),</span>
+      <span class=nx>managedPolicies</span><span class=o>:</span> <span class=p>[</span>
+        <span class=nx>iam</span><span class=p>.</span><span class=nx>ManagedPolicy</span><span class=p>.</span><span class=nx>fromAwsManagedPolicyName</span><span class=p>(</span><span class=s1>&#39;AdministratorAccess&#39;</span><span class=p>)</span>
+      <span class=p>]</span>
+    <span class=p>});</span>
 </code></pre></div><p>Finally, we make our EC2 instance. Here we define the instance type, the AMI we intend to use, the security group, the IAM role, and the key pair to pass into the instance. Additionally, blockDevices are defined so that we can specify an encrypted root volume.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>    const inst = new ec2.Instance(this, &#39;ec2-instance&#39;, {
-      vpc, 
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC
-      },
-      role: serverRole,
-      securityGroup: serverSecurityGroup,
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.LARGE),
-      machineImage: ec2.MachineImage.genericLinux({
-        &#39;us-east-2&#39;: &#39;ami-0176478f493e6143b&#39;,
-        &#39;us-east-1&#39;: &#39;ami-02b509fb28354de85&#39;,
-      }),
-      keyName: process.env.KEY_PAIR_NAME,
-      blockDevices: [
-        {
-          deviceName: &#39;/dev/sda1&#39;,
-          mappingEnabled: true,
-          volume: ec2.BlockDeviceVolume.ebs(256, {
-            deleteOnTermination: true,
-            encrypted: true,
-            volumeType: ec2.EbsDeviceVolumeType.GP2
-          })
-        }
-      ]
-    });
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript>    <span class=kr>const</span> <span class=nx>inst</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>Instance</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;ec2-instance&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>vpc</span><span class=p>,</span> 
+      <span class=nx>vpcSubnets</span><span class=o>:</span> <span class=p>{</span>
+        <span class=nx>subnetType</span>: <span class=kt>ec2.SubnetType.PUBLIC</span>
+      <span class=p>},</span>
+      <span class=nx>role</span>: <span class=kt>serverRole</span><span class=p>,</span>
+      <span class=nx>securityGroup</span>: <span class=kt>serverSecurityGroup</span><span class=p>,</span>
+      <span class=nx>instanceType</span>: <span class=kt>ec2.InstanceType.of</span><span class=p>(</span><span class=nx>ec2</span><span class=p>.</span><span class=nx>InstanceClass</span><span class=p>.</span><span class=nx>T3</span><span class=p>,</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>InstanceSize</span><span class=p>.</span><span class=nx>LARGE</span><span class=p>),</span>
+      <span class=nx>machineImage</span>: <span class=kt>ec2.MachineImage.genericLinux</span><span class=p>({</span>
+        <span class=s1>&#39;us-east-2&#39;</span><span class=o>:</span> <span class=s1>&#39;ami-0176478f493e6143b&#39;</span><span class=p>,</span>
+        <span class=s1>&#39;us-east-1&#39;</span><span class=o>:</span> <span class=s1>&#39;ami-02b509fb28354de85&#39;</span><span class=p>,</span>
+      <span class=p>}),</span>
+      <span class=nx>keyName</span>: <span class=kt>process.env.KEY_PAIR_NAME</span><span class=p>,</span>
+      <span class=nx>blockDevices</span><span class=o>:</span> <span class=p>[</span>
+        <span class=p>{</span>
+          <span class=nx>deviceName</span><span class=o>:</span> <span class=s1>&#39;/dev/sda1&#39;</span><span class=p>,</span>
+          <span class=nx>mappingEnabled</span>: <span class=kt>true</span><span class=p>,</span>
+          <span class=nx>volume</span>: <span class=kt>ec2.BlockDeviceVolume.ebs</span><span class=p>(</span><span class=mi>256</span><span class=p>,</span> <span class=p>{</span>
+            <span class=nx>deleteOnTermination</span>: <span class=kt>true</span><span class=p>,</span>
+            <span class=nx>encrypted</span>: <span class=kt>true</span><span class=p>,</span>
+            <span class=nx>volumeType</span>: <span class=kt>ec2.EbsDeviceVolumeType.GP2</span>
+          <span class=p>})</span>
+        <span class=p>}</span>
+      <span class=p>]</span>
+    <span class=p>});</span>
 </code></pre></div><p>The AMI (Amazon Machine Image) provided in this case can be any AMI. This one in particlar is the <a href=https://docs.aws.amazon.com/dlami/latest/devguide/what-is-dlami.html>Deep Learning AMI</a>.</p>
 <p>This completes our stack!</p>
 <p>One more quick item. If you want to see the ip address of the instance in the console easily, you can print out the public ip with a <code>CfnOutput</code>.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>    new cdk.CfnOutput(this, &#39;ec2-instance-public-ip&#39;, {
-      value: `${inst.instancePublicIp}`,
-      description: &#34;public ip of the ec2 instance&#34;,
-      exportName: &#34;publicIp&#34;
-    })
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript>    <span class=k>new</span> <span class=nx>cdk</span><span class=p>.</span><span class=nx>CfnOutput</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;ec2-instance-public-ip&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>value</span><span class=o>:</span> <span class=sb>`</span><span class=si>${</span><span class=nx>inst</span><span class=p>.</span><span class=nx>instancePublicIp</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span>
+      <span class=nx>description</span><span class=o>:</span> <span class=s2>&#34;public ip of the ec2 instance&#34;</span><span class=p>,</span>
+      <span class=nx>exportName</span><span class=o>:</span> <span class=s2>&#34;publicIp&#34;</span>
+    <span class=p>})</span>
 </code></pre></div><p>The full example looks like this:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>import * as cdk from &#39;aws-cdk-lib&#39;;
-import * as ec2 from &#39;aws-cdk-lib/aws-ec2&#39;;
-import * as iam from &#39;aws-cdk-lib/aws-iam&#39;;
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript><span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>cdk</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib&#39;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>ec2</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib/aws-ec2&#39;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>iam</span> <span class=kr>from</span> <span class=s1>&#39;aws-cdk-lib/aws-iam&#39;</span><span class=p>;</span>
 
-import { Construct } from &#39;constructs&#39;;
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>Construct</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;constructs&#39;</span><span class=p>;</span>
 
-export class Ec2DevStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+<span class=kr>export</span> <span class=kr>class</span> <span class=nx>Ec2DevStack</span> <span class=kr>extends</span> <span class=nx>cdk</span><span class=p>.</span><span class=nx>Stack</span> <span class=p>{</span>
+  <span class=kr>constructor</span><span class=p>(</span><span class=nx>scope</span>: <span class=kt>Construct</span><span class=p>,</span> <span class=nx>id</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>props?</span>: <span class=kt>cdk.StackProps</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kr>super</span><span class=p>(</span><span class=nx>scope</span><span class=p>,</span> <span class=nx>id</span><span class=p>,</span> <span class=nx>props</span><span class=p>);</span>
 
-    const vpc = new ec2.Vpc(this, &#39;dev-vpc&#39;, {
-      ipAddresses: ec2.IpAddresses.cidr(&#39;10.0.0.0/16&#39;),
-      natGateways: 0,
-      subnetConfiguration: [{
-        name: &#39;public&#39;,
-        cidrMask: 24, 
-        subnetType: ec2.SubnetType.PUBLIC,
-      }]
-    });
-
-
-    const serverSecurityGroup = new ec2.SecurityGroup(this, &#39;dev-security-group&#39;, {
-      vpc,
-      allowAllOutbound: true,
-    });
-
-    serverSecurityGroup.addIngressRule(
-      ec2.Peer.ipv4(&#39;1.1.1.1/32&#39;), // replace 1.1.1.1 with your ip address
-      ec2.Port.tcp(22), &#39;allow ssh access from home&#39;,
-    );
-
-    const serverRole = new iam.Role(this, &#39;server-role&#39;, {
-      assumedBy: new iam.ServicePrincipal(&#39;ec2.amazonaws.com&#39;),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName(&#39;AdministratorAccess&#39;)
-      ]
-    });
+    <span class=kr>const</span> <span class=nx>vpc</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>Vpc</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;dev-vpc&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>ipAddresses</span>: <span class=kt>ec2.IpAddresses.cidr</span><span class=p>(</span><span class=s1>&#39;10.0.0.0/16&#39;</span><span class=p>),</span>
+      <span class=nx>natGateways</span>: <span class=kt>0</span><span class=p>,</span>
+      <span class=nx>subnetConfiguration</span><span class=o>:</span> <span class=p>[{</span>
+        <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;public&#39;</span><span class=p>,</span>
+        <span class=nx>cidrMask</span>: <span class=kt>24</span><span class=p>,</span> 
+        <span class=nx>subnetType</span>: <span class=kt>ec2.SubnetType.PUBLIC</span><span class=p>,</span>
+      <span class=p>}]</span>
+    <span class=p>});</span>
 
 
-    const inst = new ec2.Instance(this, &#39;ec2-instance&#39;, {
-      vpc, 
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC
-      },
-      role: serverRole,
-      securityGroup: serverSecurityGroup,
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.LARGE),
-      machineImage: ec2.MachineImage.genericLinux({
-        &#39;us-east-2&#39;: &#39;ami-0176478f493e6143b&#39;,
-        &#39;us-east-1&#39;: &#39;ami-02b509fb28354de85&#39;,
-      }),
-      keyName: process.env.KEY_PAIR_NAME,
-      blockDevices: [
-        {
-          deviceName: &#39;/dev/sda1&#39;,
-          mappingEnabled: true,
-          volume: ec2.BlockDeviceVolume.ebs(256, {
-            deleteOnTermination: true,
-            encrypted: true,
-            volumeType: ec2.EbsDeviceVolumeType.GP2
-          })
-        }
-      ]
-    });
+    <span class=kr>const</span> <span class=nx>serverSecurityGroup</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>SecurityGroup</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;dev-security-group&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>vpc</span><span class=p>,</span>
+      <span class=nx>allowAllOutbound</span>: <span class=kt>true</span><span class=p>,</span>
+    <span class=p>});</span>
 
-    new cdk.CfnOutput(this, &#39;ec2-instance-public-ip&#39;, {
-      value: `${inst.instancePublicIp}`,
-      description: &#34;public ip of the ec2 instance&#34;,
-      exportName: &#34;publicIp&#34;
-    })
+    <span class=nx>serverSecurityGroup</span><span class=p>.</span><span class=nx>addIngressRule</span><span class=p>(</span>
+      <span class=nx>ec2</span><span class=p>.</span><span class=nx>Peer</span><span class=p>.</span><span class=nx>ipv4</span><span class=p>(</span><span class=s1>&#39;1.1.1.1/32&#39;</span><span class=p>),</span> <span class=c1>// replace 1.1.1.1 with your ip address
+</span><span class=c1></span>      <span class=nx>ec2</span><span class=p>.</span><span class=nx>Port</span><span class=p>.</span><span class=nx>tcp</span><span class=p>(</span><span class=mi>22</span><span class=p>),</span> <span class=s1>&#39;allow ssh access from home&#39;</span><span class=p>,</span>
+    <span class=p>);</span>
 
-  }
-}
+    <span class=kr>const</span> <span class=nx>serverRole</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>iam</span><span class=p>.</span><span class=nx>Role</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;server-role&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>assumedBy</span>: <span class=kt>new</span> <span class=nx>iam</span><span class=p>.</span><span class=nx>ServicePrincipal</span><span class=p>(</span><span class=s1>&#39;ec2.amazonaws.com&#39;</span><span class=p>),</span>
+      <span class=nx>managedPolicies</span><span class=o>:</span> <span class=p>[</span>
+        <span class=nx>iam</span><span class=p>.</span><span class=nx>ManagedPolicy</span><span class=p>.</span><span class=nx>fromAwsManagedPolicyName</span><span class=p>(</span><span class=s1>&#39;AdministratorAccess&#39;</span><span class=p>)</span>
+      <span class=p>]</span>
+    <span class=p>});</span>
+
+
+    <span class=kr>const</span> <span class=nx>inst</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>Instance</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;ec2-instance&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>vpc</span><span class=p>,</span> 
+      <span class=nx>vpcSubnets</span><span class=o>:</span> <span class=p>{</span>
+        <span class=nx>subnetType</span>: <span class=kt>ec2.SubnetType.PUBLIC</span>
+      <span class=p>},</span>
+      <span class=nx>role</span>: <span class=kt>serverRole</span><span class=p>,</span>
+      <span class=nx>securityGroup</span>: <span class=kt>serverSecurityGroup</span><span class=p>,</span>
+      <span class=nx>instanceType</span>: <span class=kt>ec2.InstanceType.of</span><span class=p>(</span><span class=nx>ec2</span><span class=p>.</span><span class=nx>InstanceClass</span><span class=p>.</span><span class=nx>T3</span><span class=p>,</span> <span class=nx>ec2</span><span class=p>.</span><span class=nx>InstanceSize</span><span class=p>.</span><span class=nx>LARGE</span><span class=p>),</span>
+      <span class=nx>machineImage</span>: <span class=kt>ec2.MachineImage.genericLinux</span><span class=p>({</span>
+        <span class=s1>&#39;us-east-2&#39;</span><span class=o>:</span> <span class=s1>&#39;ami-0176478f493e6143b&#39;</span><span class=p>,</span>
+        <span class=s1>&#39;us-east-1&#39;</span><span class=o>:</span> <span class=s1>&#39;ami-02b509fb28354de85&#39;</span><span class=p>,</span>
+      <span class=p>}),</span>
+      <span class=nx>keyName</span>: <span class=kt>process.env.KEY_PAIR_NAME</span><span class=p>,</span>
+      <span class=nx>blockDevices</span><span class=o>:</span> <span class=p>[</span>
+        <span class=p>{</span>
+          <span class=nx>deviceName</span><span class=o>:</span> <span class=s1>&#39;/dev/sda1&#39;</span><span class=p>,</span>
+          <span class=nx>mappingEnabled</span>: <span class=kt>true</span><span class=p>,</span>
+          <span class=nx>volume</span>: <span class=kt>ec2.BlockDeviceVolume.ebs</span><span class=p>(</span><span class=mi>256</span><span class=p>,</span> <span class=p>{</span>
+            <span class=nx>deleteOnTermination</span>: <span class=kt>true</span><span class=p>,</span>
+            <span class=nx>encrypted</span>: <span class=kt>true</span><span class=p>,</span>
+            <span class=nx>volumeType</span>: <span class=kt>ec2.EbsDeviceVolumeType.GP2</span>
+          <span class=p>})</span>
+        <span class=p>}</span>
+      <span class=p>]</span>
+    <span class=p>});</span>
+
+    <span class=k>new</span> <span class=nx>cdk</span><span class=p>.</span><span class=nx>CfnOutput</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=s1>&#39;ec2-instance-public-ip&#39;</span><span class=p>,</span> <span class=p>{</span>
+      <span class=nx>value</span><span class=o>:</span> <span class=sb>`</span><span class=si>${</span><span class=nx>inst</span><span class=p>.</span><span class=nx>instancePublicIp</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span>
+      <span class=nx>description</span><span class=o>:</span> <span class=s2>&#34;public ip of the ec2 instance&#34;</span><span class=p>,</span>
+      <span class=nx>exportName</span><span class=o>:</span> <span class=s2>&#34;publicIp&#34;</span>
+    <span class=p>})</span>
+
+  <span class=p>}</span>
+<span class=p>}</span>
 </code></pre></div><p>Before we deploy, take note of this line in the ec2.Instance block:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>      keyName: process.env.KEY_PAIR_NAME,
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-typescript data-lang=typescript>      <span class=nx>keyName</span>: <span class=kt>process.env.KEY_PAIR_NAME</span><span class=p>,</span>
 </code></pre></div><p>This reads an environment variable from your shell called <code>KEY_PAIR_NAME</code>. The value contained here is the name of an already existing Key Pair in your AWS account. You can follow this <a href=https://console.aws.amazon.com/ec2/home?#KeyPairs:>link to your list of key pairs</a> in the console, take note of the region though. You may need to create Key Pair if haven&rsquo;t launched an EC2 instance yet. You will also need the private key for the last step of our article.</p>
 <p>To set the variable in your shell, execute this with the name of your key:</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>export KEY_PAIR_NAME=mykeypairname
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=nb>export</span> <span class=nv>KEY_PAIR_NAME</span><span class=o>=</span>mykeypairname
 </code></pre></div><p>Now, you can launch your stack!</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>cdk deploy
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>cdk deploy
 </code></pre></div><p>Note the IP address of your EC2 instance in the CDK output and head to the next step!</p>
 <h2 id=connecting-to-your-ec2-instance-with-vs-code>Connecting to your EC2 instance with VS Code</h2>
 <p>VS Code will prompt you to connect to instances named in your <code>~/.ssh/config</code> file. Here is the basic information you should include there to connect.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>Host ec2-dev
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text>Host ec2-dev
   HostName USE_YOUR_EC2_IP_HERE
   IdentityFile ~/.ssh/key_pair_name.pem
   User ubuntu
 </code></pre></div><h2 id=turning-off-your-stack>Turning Off Your Stack</h2>
 <p>Don&rsquo;t forget to turn off your EC2 instance if you aren&rsquo;t using it! This stack will increase you AWS bill and you don&rsquo;t want to pay for resources you aren&rsquo;t using.</p>
 <p>The following command will remove all the resources from our CDK template above.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>cdk undeploy
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>cdk undeploy
 </code></pre></div><p>Alternatively, if you want to retain the contents of the EBS volume, you can stop the EC2 instance through the console or API and resume it later. It will likely come back with a different ip address though.</p>
 <blockquote>
 <p>⚠️ <strong>Be advised</strong>: You are billed for the EBS volume even when your EC2 instance is in a stopped state. To avoid additional charges, undeploy the stack or terminate the instance.</p>
