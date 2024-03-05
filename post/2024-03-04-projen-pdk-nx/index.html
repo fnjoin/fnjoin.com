@@ -6,7 +6,7 @@
 <title>Polyglot monorepo build and maintenance automation - fn:join</title>
 <meta name=description content="Creating and using blueprints with Projen, PDK, and Nx.">
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","name":"Polyglot monorepo build and maintenance automation"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"Polyglot monorepo build and maintenance automation","description":"CDK is to AWS services (ec2, lambda, s3, sagemaker, etc) As Projen is to software project infrastructure (npm, maven, pip, poetry, eslint, prettier, tsconfig, nx, git, etc)\n This article is for software developers using CDK with Typescript and building applications in languages like typescript, javascript, python, java that would like to increase the leverage of their efforts.\nConsider the following statements.\nI’d rather not…\n Copy code from one folder to another manually to reuse it.","inLanguage":"en","wordCount":4896,"datePublished":"2024-03-03T00:00:00","dateModified":"2024-03-03T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["aws, cdk, vscode, nx, projen, pdk"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","name":"Polyglot monorepo build and maintenance automation"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"Polyglot monorepo build and maintenance automation","description":"CDK is to AWS services (ec2, lambda, s3, sagemaker, etc) As Projen is to software project infrastructure (npm, maven, pip, poetry, eslint, prettier, tsconfig, nx, git, etc)\n This article is for software developers using CDK with Typescript and building applications in languages like typescript, javascript, python, java that would like to increase the leverage of their efforts.\nConsider the following statements.\nI’d rather not…\n Copy code from one folder to another manually to reuse it.","inLanguage":"en","wordCount":4929,"datePublished":"2024-03-03T00:00:00","dateModified":"2024-03-03T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["aws, cdk, vscode, nx, projen, pdk"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
 <meta property="og:title" content="Polyglot monorepo build and maintenance automation">
 <meta property="og:description" content="Creating and using blueprints with Projen, PDK, and Nx.">
 <meta property="og:url" content="https://fnjoin.com/post/2024-03-04-projen-pdk-nx/">
@@ -100,7 +100,7 @@
 <h2 class=post-subheading>Creating and using blueprints with Projen, PDK, and Nx.</h2>
 <span class=post-meta>
 <i class="fas fa-calendar"></i>&nbsp;Posted on March 3, 2024
-&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;23&nbsp;minutes
+&nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;24&nbsp;minutes
 &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Archie Cowan
 </span>
 </div>
@@ -170,15 +170,17 @@ As Projen is to software project infrastructure
 <li>A CDK application to deploy the webapp</li>
 </ul>
 <h2 id=lets-open-a-terminal-and-build-something>Let’s open a terminal and build something.</h2>
-<p>We’re going to look at Projen by itself first to make clear the role Projen plays later as we work with two other tools. Our ultimate goal is to deploy a serverless stack to AWS with a reactjs frontend.<br>
-Bootstrapping a new monorepo</p>
+<p>We’re going to look at Projen by itself first to make clear the role Projen plays later as we work with two other tools. Our ultimate goal is to deploy a serverless stack to AWS with a reactjs frontend.</p>
+<p>Bootstrapping a new monorepo:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>mkdir prototype-with-pdk
-npm install -g @aws/pdk pnpm
+npm install -g pnpm
 git init
 echo v18.16.0 &gt; .nvmrc
 nvm use
-npx pdk new --package-manager=pnpm monorepo-ts
-</code></pre></div><p>Opening <code>.projenrc.ts</code>, we have this</p>
+nvm install # if needed
+npx @aws/pdk new --package-manager=pnpm monorepo-ts
+</code></pre></div><p><em>Note: this assumes you&rsquo;re an nvm user but any tool version manager, such as <a href=https://asdf-vm.com/>asdf</a>, will work fine.</em></p>
+<p>Opening <code>.projenrc.ts</code>, we have this</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>import { javascript } from &#34;projen&#34;;
 import { monorepo } from &#34;@aws/pdk&#34;;
 const project = new monorepo.MonorepoTsProject({
@@ -188,7 +190,7 @@ const project = new monorepo.MonorepoTsProject({
     projenrcTs: true,
 });
 project.synth();
-</code></pre></div><p>I like to enable prettier with 4 space indentation, double quotes, and to disable eslint at the root project.</p>
+</code></pre></div><p>I like to enable prettier with 4 space indentation, double quotes, and to disable eslint at the root project so that I can customize it on a per project basis.</p>
 <p>Adding these lines to the constructor input…</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>prettier: true,
 prettierOptions: {
@@ -538,14 +540,14 @@ export default defineConfig({
     build: {
         sourcemap: true,
         lib: {
-            entry: path.resolve(\_\_dirname, &#34;src/index.tsx&#34;),
+            entry: path.resolve(__dirname, &#34;src/index.tsx&#34;),
             name: packageJson.name,
             fileName: &#34;index&#34;,
         },
         rollupOptions: {
             external: dependencies,
             watch: {
-                include: &#34;src/\*\*&#34;,
+                include: &#34;src/**&#34;,
             },
             output: {
                 globals: {
