@@ -6,7 +6,7 @@
 <title>Polyglot monorepo build and maintenance automation - fn:join</title>
 <meta name=description content="Creating and using blueprints with Projen, PDK, and Nx.">
 <meta name=author content="Salman Malik, Archie Cowan"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"fn:join","url":"https:\/\/fnjoin.com\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/fnjoin.com\/"}</script>
-<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","name":"Polyglot monorepo build and maintenance automation"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"Polyglot monorepo build and maintenance automation","description":"CDK is to AWS services (ec2, lambda, s3, sagemaker, etc) As Projen is to software project infrastructure (npm, maven, pip, poetry, eslint, prettier, tsconfig, nx, git, etc)\n This article is for software developers using CDK with Typescript and building applications in languages like typescript, javascript, python, java that would like to increase the leverage of their efforts.\nConsider the following statements.\nI’d rather not…\n Copy code from one folder to another manually to reuse it.","inLanguage":"en","wordCount":4929,"datePublished":"2024-03-03T00:00:00","dateModified":"2024-03-03T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["aws, cdk, vscode, nx, projen, pdk"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
+<script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/fnjoin.com\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","name":"Polyglot monorepo build and maintenance automation"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Archie Cowan"},"headline":"Polyglot monorepo build and maintenance automation","description":"CDK is to AWS services (ec2, lambda, s3, sagemaker, etc) As Projen is to software project infrastructure (npm, maven, pip, poetry, eslint, prettier, tsconfig, nx, git, etc)\n You\u0026rsquo;re a user of CDK and Typescript. You build applications with Typescript, Javascript, Python, or Java. Want to increase the leverage of your code for reuse in your source repositories? In this article, we\u0026rsquo;ll empower you with tools for automation to improve the way you manage source code.","inLanguage":"en","wordCount":4943,"datePublished":"2024-03-03T00:00:00","dateModified":"2024-03-03T00:00:00","image":"https:\/\/fnjoin.com\/","keywords":["aws, cdk, vscode, nx, projen, pdk"],"mainEntityOfPage":"https:\/\/fnjoin.com\/post\/2024-03-04-projen-pdk-nx\/","publisher":{"@type":"Organization","name":"https:\/\/fnjoin.com\/","logo":{"@type":"ImageObject","url":"https:\/\/fnjoin.com\/","height":60,"width":60}}}</script>
 <meta property="og:title" content="Polyglot monorepo build and maintenance automation">
 <meta property="og:description" content="Creating and using blueprints with Projen, PDK, and Nx.">
 <meta property="og:url" content="https://fnjoin.com/post/2024-03-04-projen-pdk-nx/">
@@ -120,11 +120,11 @@
 As Projen is to software project infrastructure
 (npm, maven, pip, poetry, eslint, prettier, tsconfig, nx, git, etc)</p>
 </blockquote>
-<p>This article is for software developers using CDK with Typescript and building applications in languages like typescript, javascript, python, java that would like to increase the leverage of their efforts.</p>
+<p>You&rsquo;re a user of CDK and Typescript. You build applications with Typescript, Javascript, Python, or Java. Want to increase the leverage of your code for reuse in your source repositories? In this article, we&rsquo;ll empower you with tools for automation to improve the way you manage source code.</p>
 <p>Consider the following statements.</p>
 <p>I’d rather not…</p>
 <ul>
-<li>Copy code from one folder to another manually to reuse it.</li>
+<li>Copy code from one folder to another to reuse it.</li>
 <li>Put all my code in one package because of a limited build infrastructure.</li>
 <li>Remember to rebuild each package I make before I deploy it to AWS with CDK.</li>
 <li>Manage package repository infrastructure</li>
@@ -136,7 +136,7 @@ As Projen is to software project infrastructure
 <li>Keep reusable components and project specific code separated in my repository.</li>
 <li>Keep my build artifacts up to date with minimal rebuilds and zero manual efforts.</li>
 </ul>
-<p>If these resonate with you, I think you will take a keen interest in the solutions discussed here.</p>
+<p>If these thoughts resonate, you will take a keen interest in the solutions discussed here.</p>
 <p>We will cover the following learning objectives in this article:</p>
 <ul>
 <li>Get experience with managing a monorepo using Projen abstractions.</li>
