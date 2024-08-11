@@ -4,7 +4,6 @@ const path = require("path");
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-    basePath: "/blog2",
     output: "export",
     trailingSlash: true,
     // Optional: Change links `/me` -> `/me/` and emit `/me.html` -> `/me/index.html`
