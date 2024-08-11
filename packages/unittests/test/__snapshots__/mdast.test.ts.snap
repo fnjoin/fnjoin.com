@@ -1,0 +1,553 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`does mdast have block level elements like pandoc? 1`] = `
+{
+  "children": [
+    {
+      "attributes": {
+        "key": "value",
+      },
+      "children": [
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "He dies.",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "name": "spoiler",
+      "type": "containerDirective",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`mdast 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "type": "text",
+          "value": "A lovely language know as ",
+        },
+        {
+          "attributes": {
+            "title": "HyperText Markup Language",
+          },
+          "children": [
+            {
+              "type": "text",
+              "value": "HTML",
+            },
+          ],
+          "name": "abbr",
+          "type": "textDirective",
+        },
+        {
+          "type": "text",
+          "value": ".",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`mdast has text directives but how flexible are they? 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "type": "text",
+          "value": "A lovely language known as ",
+        },
+        {
+          "attributes": {
+            "title": "This is something",
+          },
+          "children": [
+            {
+              "type": "text",
+              "value": "stuff",
+            },
+          ],
+          "name": "anything",
+          "type": "textDirective",
+        },
+        {
+          "type": "text",
+          "value": ".",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`mdast has text directives but how flexible are they? 2`] = `
+"A lovely language known as :anything[stuff]{title="This is something"}.
+"
+`;
+
+exports[`mdast to html 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "position": {
+            "end": {
+              "column": 46,
+              "line": 2,
+              "offset": 46,
+            },
+            "start": {
+              "column": 1,
+              "line": 2,
+              "offset": 1,
+            },
+          },
+          "type": "text",
+          "value": "Maybe needs to be longer than a single thing?",
+        },
+      ],
+      "position": {
+        "end": {
+          "column": 46,
+          "line": 2,
+          "offset": 46,
+        },
+        "start": {
+          "column": 1,
+          "line": 2,
+          "offset": 1,
+        },
+      },
+      "type": "paragraph",
+    },
+    {
+      "attributes": {
+        "class": "foo",
+        "key": "value",
+      },
+      "children": [
+        {
+          "children": [
+            {
+              "position": {
+                "end": {
+                  "column": 9,
+                  "line": 5,
+                  "offset": 92,
+                },
+                "start": {
+                  "column": 1,
+                  "line": 5,
+                  "offset": 84,
+                },
+              },
+              "type": "text",
+              "value": "He dies.",
+            },
+          ],
+          "position": {
+            "end": {
+              "column": 9,
+              "line": 5,
+              "offset": 92,
+            },
+            "start": {
+              "column": 1,
+              "line": 5,
+              "offset": 84,
+            },
+          },
+          "type": "paragraph",
+        },
+      ],
+      "name": "spoiler",
+      "position": {
+        "end": {
+          "column": 4,
+          "line": 6,
+          "offset": 96,
+        },
+        "start": {
+          "column": 1,
+          "line": 4,
+          "offset": 48,
+        },
+      },
+      "type": "containerDirective",
+    },
+    {
+      "children": [
+        {
+          "position": {
+            "end": {
+              "column": 14,
+              "line": 8,
+              "offset": 111,
+            },
+            "start": {
+              "column": 1,
+              "line": 8,
+              "offset": 98,
+            },
+          },
+          "type": "text",
+          "value": "I don't know.",
+        },
+      ],
+      "position": {
+        "end": {
+          "column": 14,
+          "line": 8,
+          "offset": 111,
+        },
+        "start": {
+          "column": 1,
+          "line": 8,
+          "offset": 98,
+        },
+      },
+      "type": "paragraph",
+    },
+    {
+      "children": [
+        {
+          "position": {
+            "end": {
+              "column": 6,
+              "line": 10,
+              "offset": 118,
+            },
+            "start": {
+              "column": 1,
+              "line": 10,
+              "offset": 113,
+            },
+          },
+          "type": "text",
+          "value": "Some ",
+        },
+        {
+          "position": {
+            "end": {
+              "column": 17,
+              "line": 10,
+              "offset": 129,
+            },
+            "start": {
+              "column": 6,
+              "line": 10,
+              "offset": 118,
+            },
+          },
+          "type": "inlineCode",
+          "value": "backticks",
+        },
+        {
+          "position": {
+            "end": {
+              "column": 34,
+              "line": 10,
+              "offset": 146,
+            },
+            "start": {
+              "column": 17,
+              "line": 10,
+              "offset": 129,
+            },
+          },
+          "type": "text",
+          "value": " for inline code.",
+        },
+      ],
+      "position": {
+        "end": {
+          "column": 34,
+          "line": 10,
+          "offset": 146,
+        },
+        "start": {
+          "column": 1,
+          "line": 10,
+          "offset": 113,
+        },
+      },
+      "type": "paragraph",
+    },
+  ],
+  "position": {
+    "end": {
+      "column": 5,
+      "line": 11,
+      "offset": 151,
+    },
+    "start": {
+      "column": 1,
+      "line": 1,
+      "offset": 0,
+    },
+  },
+  "type": "root",
+}
+`;
+
+exports[`mdast to html 2`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "position": {
+            "end": {
+              "column": 46,
+              "line": 2,
+              "offset": 46,
+            },
+            "start": {
+              "column": 1,
+              "line": 2,
+              "offset": 1,
+            },
+          },
+          "type": "text",
+          "value": "Maybe needs to be longer than a single thing?",
+        },
+      ],
+      "position": {
+        "end": {
+          "column": 46,
+          "line": 2,
+          "offset": 46,
+        },
+        "start": {
+          "column": 1,
+          "line": 2,
+          "offset": 1,
+        },
+      },
+      "properties": {},
+      "tagName": "p",
+      "type": "element",
+    },
+    {
+      "type": "text",
+      "value": "
+",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "position": {
+                "end": {
+                  "column": 9,
+                  "line": 5,
+                  "offset": 92,
+                },
+                "start": {
+                  "column": 1,
+                  "line": 5,
+                  "offset": 84,
+                },
+              },
+              "type": "text",
+              "value": "He dies.",
+            },
+          ],
+          "position": {
+            "end": {
+              "column": 9,
+              "line": 5,
+              "offset": 92,
+            },
+            "start": {
+              "column": 1,
+              "line": 5,
+              "offset": 84,
+            },
+          },
+          "properties": {},
+          "tagName": "p",
+          "type": "element",
+        },
+      ],
+      "properties": {
+        "anything": "foo",
+        "className": [
+          "blah",
+          "value",
+        ],
+        "id": "spoiler",
+      },
+      "tagName": "div",
+      "type": "element",
+    },
+    {
+      "type": "text",
+      "value": "
+",
+    },
+    {
+      "children": [
+        {
+          "position": {
+            "end": {
+              "column": 14,
+              "line": 8,
+              "offset": 111,
+            },
+            "start": {
+              "column": 1,
+              "line": 8,
+              "offset": 98,
+            },
+          },
+          "type": "text",
+          "value": "I don't know.",
+        },
+      ],
+      "position": {
+        "end": {
+          "column": 14,
+          "line": 8,
+          "offset": 111,
+        },
+        "start": {
+          "column": 1,
+          "line": 8,
+          "offset": 98,
+        },
+      },
+      "properties": {},
+      "tagName": "p",
+      "type": "element",
+    },
+    {
+      "type": "text",
+      "value": "
+",
+    },
+    {
+      "children": [
+        {
+          "position": {
+            "end": {
+              "column": 6,
+              "line": 10,
+              "offset": 118,
+            },
+            "start": {
+              "column": 1,
+              "line": 10,
+              "offset": 113,
+            },
+          },
+          "type": "text",
+          "value": "Some ",
+        },
+        {
+          "children": [
+            {
+              "position": {
+                "end": {
+                  "column": 17,
+                  "line": 10,
+                  "offset": 129,
+                },
+                "start": {
+                  "column": 6,
+                  "line": 10,
+                  "offset": 118,
+                },
+              },
+              "type": "text",
+              "value": "backticks",
+            },
+          ],
+          "position": {
+            "end": {
+              "column": 17,
+              "line": 10,
+              "offset": 129,
+            },
+            "start": {
+              "column": 6,
+              "line": 10,
+              "offset": 118,
+            },
+          },
+          "properties": {},
+          "tagName": "code",
+          "type": "element",
+        },
+        {
+          "position": {
+            "end": {
+              "column": 34,
+              "line": 10,
+              "offset": 146,
+            },
+            "start": {
+              "column": 17,
+              "line": 10,
+              "offset": 129,
+            },
+          },
+          "type": "text",
+          "value": " for inline code.",
+        },
+      ],
+      "position": {
+        "end": {
+          "column": 34,
+          "line": 10,
+          "offset": 146,
+        },
+        "start": {
+          "column": 1,
+          "line": 10,
+          "offset": 113,
+        },
+      },
+      "properties": {},
+      "tagName": "p",
+      "type": "element",
+    },
+  ],
+  "position": {
+    "end": {
+      "column": 5,
+      "line": 11,
+      "offset": 151,
+    },
+    "start": {
+      "column": 1,
+      "line": 1,
+      "offset": 0,
+    },
+  },
+  "type": "root",
+}
+`;
+
+exports[`mdast to html 3`] = `
+"<p>Maybe needs to be longer than a single thing?</p>
+<div id="spoiler" anything="foo" class="blah value"><p>He dies.</p></div>
+<p>I don't know.</p>
+<p>Some <code>backticks</code> for inline code.</p>"
+`;

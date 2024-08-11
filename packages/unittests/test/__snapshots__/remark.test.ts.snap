@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`remark is easier than mdast? 1`] = `{}`;
+
+exports[`this is the example from remark-directive 1`] = `{}`;

@@ -1,0 +1,69 @@
+.article {
+    @apply prose max-w-none grid grid-cols-1 md:grid-cols-12 grid-flow-row gap-0;
+}
+
+.article div,
+.article pre,
+.article ul,
+.article ol,
+.article h1,
+.article h2,
+.article h3,
+.article h4,
+.article h5,
+.article blockquote,
+.article table,
+.article section,
+.article figure {
+    @apply col-start-4 col-end-10 col-span-6;
+}
+
+.article .margin-note {
+    @apply md:col-start-10 md:col-end-13 md:col-span-3 md:p-3 md:row-span-3;
+}
+
+.article {
+    @apply mb-10;
+}
+
+.article pre {
+    @apply text-xs;
+}
+.article h1,
+.article h2,
+.article h3,
+.article h4,
+.article h5 {
+    @apply mt-4 m-2;
+}
+
+.author {
+    @apply grid grid-cols-8;
+}
+
+.author div {
+    @apply col-start-2 col-span-8;
+}
+
+.author img {
+    @apply col-start-1 col-end-2 col-span-1;
+}
+
+.markdown {
+    @apply text-lg leading-relaxed;
+}
+
+.markdown p,
+.markdown ul,
+.markdown ol,
+.markdown blockquote {
+    @apply my-6;
+}
+
+.markdown h2 {
+    @apply text-3xl mt-12 mb-4 leading-snug;
+}
+
+.markdown h3 {
+    @apply text-2xl mt-8 mb-4 leading-snug;
+}

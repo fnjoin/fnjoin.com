@@ -1,0 +1,186 @@
+{
+  "tasks": {
+    "build": {
+      "name": "build",
+      "description": "Full release build",
+      "steps": [
+        {
+          "spawn": "pre-compile"
+        },
+        {
+          "spawn": "compile"
+        },
+        {
+          "spawn": "post-compile"
+        },
+        {
+          "spawn": "test"
+        },
+        {
+          "spawn": "package"
+        }
+      ]
+    },
+    "compile": {
+      "name": "compile",
+      "description": "Only compile",
+      "steps": [
+        {
+          "exec": "tsc --build"
+        }
+      ]
+    },
+    "default": {
+      "name": "default",
+      "description": "Synthesize project files"
+    },
+    "dev": {
+      "name": "dev",
+      "steps": [
+        {
+          "exec": "next"
+        }
+      ]
+    },
+    "eslint": {
+      "name": "eslint",
+      "description": "Runs eslint against the codebase",
+      "steps": [
+        {
+          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern $@ src test build-tools",
+          "receiveArgs": true
+        }
+      ]
+    },
+    "image-server": {
+      "name": "image-server",
+      "steps": [
+        {
+          "spawn": "build"
+        },
+        {
+          "exec": "image-server --port 8081 --root-dir ../../content"
+        }
+      ]
+    },
+    "install": {
+      "name": "install",
+      "description": "Install project dependencies and update lockfile (non-frozen)",
+      "steps": [
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        }
+      ]
+    },
+    "install:ci": {
+      "name": "install:ci",
+      "description": "Install project dependencies using frozen lockfile",
+      "steps": [
+        {
+          "exec": "pnpm i --frozen-lockfile"
+        }
+      ]
+    },
+    "package": {
+      "name": "package",
+      "steps": [
+        {
+          "exec": "next build"
+        },
+        {
+          "exec": "static-website-image-gen --html-dir ./out --origin-dir ./public --target-dir ./out"
+        },
+        {
+          "exec": "static-website-image-gen --html-dir ./out --origin-dir ../../content --target-dir ./out"
+        }
+      ]
+    },
+    "post-compile": {
+      "name": "post-compile",
+      "description": "Runs after successful compilation"
+    },
+    "post-upgrade": {
+      "name": "post-upgrade",
+      "description": "Runs after upgrading dependencies"
+    },
+    "pre-compile": {
+      "name": "pre-compile",
+      "description": "Prepare the project for compilation"
+    },
+    "serve": {
+      "name": "serve",
+      "steps": [
+        {
+          "exec": "http-server out"
+        }
+      ]
+    },
+    "start": {
+      "name": "start",
+      "steps": [
+        {
+          "exec": "next start"
+        }
+      ]
+    },
+    "test": {
+      "name": "test",
+      "description": "Run tests",
+      "steps": [
+        {
+          "exec": "jest --passWithNoTests --updateSnapshot",
+          "receiveArgs": true
+        },
+        {
+          "spawn": "eslint"
+        }
+      ]
+    },
+    "test:watch": {
+      "name": "test:watch",
+      "description": "Run jest in watch mode",
+      "steps": [
+        {
+          "exec": "jest --watch"
+        }
+      ]
+    },
+    "upgrade": {
+      "name": "upgrade",
+      "description": "upgrade dependencies",
+      "env": {
+        "CI": "0"
+      },
+      "steps": [
+        {
+          "exec": "pnpm dlx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@archieco/image-server,@archieco/static-website-image-gen,@jest/globals,@types/hast,@types/jest,@types/unist,critters,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,prettier,ts-jest,typescript,@next/third-parties,@tailwindcss/typography,@types/d3-shape,d3-shape,hastscript,http-server,image-size,mdast-util-directive,mdast-util-from-markdown,mdast-util-to-markdown,mdast-util-toc,micromark-extension-directive,react-markdown,remark-frontmatter,remark-gfm,remark-stringify,sharp,strip-markdown,to-vfile,vfile-matter,xml-js"
+        },
+        {
+          "exec": "pnpm i --no-frozen-lockfile"
+        },
+        {
+          "exec": "pnpm update @archieco/image-server @archieco/static-website-image-gen @jest/globals @next/eslint-plugin-next @types/eslint @types/hast @types/jest @types/node @types/react-dom @types/react @types/unist @typescript-eslint/eslint-plugin @typescript-eslint/parser autoprefixer constructs critters eslint-config-next eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit postcss prettier projen tailwindcss ts-jest typescript @next/third-parties @tailwindcss/typography @types/d3-shape classnames d3-shape date-fns gray-matter hast-util-to-html hastscript http-server image-size mdast-util-directive mdast-util-from-markdown mdast-util-to-hast mdast-util-to-markdown mdast-util-toc micromark-extension-directive next react-dom react-markdown react rehype-document rehype-format rehype-stringify remark-directive remark-frontmatter remark-gfm remark-html remark-parse remark-rehype remark-stringify remark sharp strip-markdown to-vfile unified unist-util-visit vfile-matter xml-js"
+        },
+        {
+          "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
+        }
+      ]
+    },
+    "watch": {
+      "name": "watch",
+      "description": "Watch & compile in the background",
+      "steps": [
+        {
+          "exec": "tsc --build -w"
+        }
+      ]
+    }
+  },
+  "env": {
+    "PATH": "$(pnpm -c exec \"node --print process.env.PATH\")"
+  },
+  "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
+}
