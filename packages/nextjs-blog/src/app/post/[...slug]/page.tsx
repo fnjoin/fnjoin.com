@@ -13,6 +13,7 @@ import {
     Tags,
 } from "@/lib/markdowncomponents";
 import { BlogRepository } from "@/lib/repository";
+import ScrollTracker from "@/app/_components/scrolltracking";
 
 export default async function Post({ params }: Params) {
     const repository = BlogRepository.fromCwd();
@@ -43,6 +44,7 @@ export default async function Post({ params }: Params) {
                     author={post.author_detail.name ?? "Author"}
                     startDate={post.date}
                 />
+                <ScrollTracker postId={post.slug} />
             </Article>
         </main>
     );
