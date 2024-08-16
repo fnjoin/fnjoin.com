@@ -8,8 +8,12 @@ function getPostsForSitemap(): MetadataRoute.Sitemap {
     const pages = PageRepository.fromCwd().getAllPosts();
 
     return [...posts, ...pages].map((page) => {
+        let path = page.slug;
+        if (!path.endsWith("/")) {
+            path += "/";
+        }
         return {
-            url: `https://www.fnjoin.com/${page.slug}`,
+            url: `https://www.fnjoin.com/${path}`,
             lastModified: page.date,
             changeFrequency: "daily",
             priority: 10,
